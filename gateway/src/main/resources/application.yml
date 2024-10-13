@@ -1,0 +1,13 @@
+server:
+  port: 80
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: service-test-route
+          uri: lb://test
+          predicates:
+            - Path=/test/** # 匹配api路径
