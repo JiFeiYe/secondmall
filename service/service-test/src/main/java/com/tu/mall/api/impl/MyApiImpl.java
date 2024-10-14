@@ -3,7 +3,7 @@ package com.tu.mall.api.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.tu.mall.api.MyApi;
 import com.tu.mall.entity.UserInfo;
-import com.tu.mall.service.IUserInfoService;
+import com.tu.mall.mapper.UserInfoMapper;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,10 +17,10 @@ import java.util.List;
 public class MyApiImpl implements MyApi {
 
     @Autowired
-    private IUserInfoService userInfoService;
+    private UserInfoMapper userInfoMapper;
 
     public List<UserInfo> getUserInfoList() {
         LambdaQueryWrapper<UserInfo> lqw = new LambdaQueryWrapper<>();
-        return userInfoService.list(lqw);
+        return userInfoMapper.selectList(lqw);
     }
 }

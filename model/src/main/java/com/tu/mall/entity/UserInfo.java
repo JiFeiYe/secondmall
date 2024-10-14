@@ -31,7 +31,7 @@ public class UserInfo implements Serializable {
      * 雪花/UUID？
      */
     @TableId(value = "user_id", type = IdType.ASSIGN_ID)
-    private String userId;
+    private Long userId;
 
     /**
      * 账号

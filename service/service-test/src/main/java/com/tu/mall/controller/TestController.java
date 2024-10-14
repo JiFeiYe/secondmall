@@ -19,7 +19,7 @@ import java.util.List;
  * @since 2024/10/11
  */
 @RestController
-@RequestMapping("/test")
+@RequestMapping("/my")
 public class TestController {
 
     @Autowired
@@ -48,9 +48,7 @@ public class TestController {
         System.out.println(string);
 
         List<UserInfo> userInfos = myApi.getUserInfoList();
-        for (UserInfo userInfo : userInfos) {
-            System.out.println(userInfo.toString());
-        }
+        System.out.println(userInfos.get(0));
         return Result.ok(userInfos);
     }
 }

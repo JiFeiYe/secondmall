@@ -43,7 +43,10 @@ public class JWTUtil {
         JWT jwt = JWT.of(token);
         String userId = "";
         if (jwt.setKey(KEY).validate(0)) {
-            userId = (String) jwt.getPayload("userId");
+            Object o = jwt.getPayload("userId");
+            if (o != null) {
+                userId = o.toString();
+            }
         }
         return userId;
     }

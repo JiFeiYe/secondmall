@@ -6,6 +6,7 @@ import cn.hutool.json.JSONUtil;
 import com.tu.mall.common.result.Result;
 import com.tu.mall.common.result.ResultCodeEnum;
 import com.tu.mall.common.utils.JWTUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -27,12 +28,24 @@ import java.util.List;
 @Component
 public class AuthGlobalFilter implements GlobalFilter {
 
+    @Value("${freeUrls.url}")
+    private String freeUrls;
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         // 获取请求对象
         ServerHttpRequest request = exchange.getRequest();
         // 获取url（作用待定->api拦截）
         String url = request.getURI().getPath();
+        System.out.println("请求路径" + url);
+
+        // 匹配免权限路径
+        for (String freeUrl : StrUtil.split(freeUrls, ",")) {
+            if (StrUtil.indexOf(url, freeUrl, 0, false) != -1) { // 包含
+                System.out.println(url + "是免权限路径，通过。");
+                return chain.filter(exchange);
+            }
+        }
 
         // 获取jwt-token并解析出userId
         String token = getToken(request);
@@ -40,12 +53,14 @@ public class AuthGlobalFilter implements GlobalFilter {
         if (StrUtil.isNotEmpty(token)) {
             userId = JWTUtil.getUserId(token);
         }
-        if (StrUtil.isNotEmpty(userId)) {
+        if (StrUtil.isNotEmpty(userId)) { // 如果jwt校验通过
+            System.out.println("jwt校验通过，userId：" + userId);
             // 将userId设置到请求头
             request.mutate().header("userId", userId).build();
             // 将request变回exchange对象并传递到下一过滤器链
             return chain.filter(exchange.mutate().request(request).build());
         } else {
+            System.out.println("jwt校验失败");
             ServerHttpResponse response = exchange.getResponse();
             return out(response, ResultCodeEnum.LOGIN_AUTH);
         }
@@ -65,6 +80,7 @@ public class AuthGlobalFilter implements GlobalFilter {
         if (CollectionUtil.isNotEmpty(list)) {
             token = list.get(0);
         }
+        System.out.println("获取的token是：" + token);
         return token;
     }
 

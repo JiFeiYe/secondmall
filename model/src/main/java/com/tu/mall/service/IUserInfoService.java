@@ -1,7 +1,6 @@
 package com.tu.mall.service;
 
-import com.tu.mall.entity.UserInfo;
-import com.baomidou.mybatisplus.extension.service.IService;
+import java.util.Map;
 
 /**
  * <p>
@@ -11,6 +10,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author JiFeiYe
  * @since 2024-10-10
  */
-public interface IUserInfoService extends IService<UserInfo> {
+public interface IUserInfoService {
 
+    Map<String, String> login(String email, String password);
 }

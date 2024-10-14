@@ -10,4 +10,17 @@ spring:
         - id: service-test-route
           uri: lb://test
           predicates:
-            - Path=/test/** # 匹配api路径
+            - Path=/my/** # 匹配api路径
+        - id: service-user-route
+          uri: lb://service-user
+          predicates:
+            - Path=/api1/**
+knife4j:
+  gateway:
+    enabled: true # 开启gateway聚合组件
+    strategy: discover # 聚合模式采用discover服务发现的模式
+    discover:
+      enabled: true # 开启discover模式
+      version: swagger2 # 聚合子服务全部为Swagger2规范的文档
+freeUrls:
+  url: login,v2

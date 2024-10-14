@@ -9,9 +9,10 @@ import lombok.Getter;
 @Getter
 public enum ResultCodeEnum {
     SUCCESS(200, "success"),
-    FAIL(201, "fail"),
+    FAIL(400, "fail"),
 
-    LOGIN_AUTH(202, "尚未登录"),
+    LOGIN_AUTH(4001, "尚未登录"),
+    LOGIN_FAIL(4002, "登录失败"),
     ;
 
     private final Integer code;
