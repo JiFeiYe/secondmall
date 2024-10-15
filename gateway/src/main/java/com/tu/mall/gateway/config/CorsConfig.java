@@ -1,4 +1,4 @@
-package com.tu.mall.gateway.filter;
+package com.tu.mall.gateway.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,13 +7,11 @@ import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 /**
- * 允许跨域请求
- *
  * @author JiFeiYe
- * @since 2024/10/11
+ * @since 2024/10/14
  */
 @Configuration
-public class CorsFilter {
+public class CorsConfig {
 
     @Bean
     public CorsWebFilter corsWebFilter() {

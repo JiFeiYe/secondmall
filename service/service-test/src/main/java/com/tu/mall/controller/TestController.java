@@ -2,7 +2,7 @@ package com.tu.mall.controller;
 
 import com.tu.mall.api.MyApi;
 import com.tu.mall.api.MyApi2;
-import com.tu.mall.common.mail.MailService;
+import com.tu.mall.common.utils.MailService;
 import com.tu.mall.common.result.Result;
 import com.tu.mall.entity.UserInfo;
 import org.apache.dubbo.config.annotation.DubboReference;

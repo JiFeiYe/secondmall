@@ -1,14 +1,18 @@
 package com.tu.mall.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.tu.mall.common.result.Result;
 import com.tu.mall.common.result.ResultCodeEnum;
+import com.tu.mall.common.utils.AuthContextHolder;
+import com.tu.mall.entity.UserAddress;
+import com.tu.mall.entity.UserInfo;
+import com.tu.mall.service.IUserAddressService;
 import com.tu.mall.service.IUserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -16,17 +20,20 @@ import java.util.Map;
  * @since 2024/10/13
  */
 @RestController
-@RequestMapping("/api1/user")
+@RequestMapping // "/front/user"被网关截断，无须再写
 @Slf4j
 public class UserController {
 
     @Autowired
     private IUserInfoService userInfoService;
 
+    @Autowired
+    private IUserAddressService userAddressService;
+
     /**
      * 用户登录
      *
-     * @param email    邮箱
+     * @param email    用户邮箱
      * @param password 密码
      * @return {@code Result<Map<String, String>>}
      */
@@ -39,4 +46,139 @@ public class UserController {
             return Result.exception(ResultCodeEnum.LOGIN_FAIL);
         return Result.ok(map);
     }
+
+    /**
+     * 生成邮箱验证码并发送给用户
+     * <p>
+     * 验证码限时五分钟
+     * <p>
+     * 需验证邮箱未注册
+     *
+     * @param email 用户邮箱
+     * @return {@code Result<String>}
+     */
+    @GetMapping("/register/code")
+    public Result<String> getVerifyCode(HttpServletRequest request, String email) {
+        log.info("获取邮箱验证码，email：{}", email);
+
+        // 验证邮箱未注册
+        userInfoService.verifyEmail(email);
+        // 生成验证码，发送邮件
+        String userId = AuthContextHolder.getUserId(request);
+        userInfoService.generateCode(userId, email);
+
+        return Result.ok();
+    }
+
+    /**
+     * 同上一个方法，但不用验证邮箱未注册
+     *
+     * @param email 用户邮箱
+     * @return {@code Result<String>}
+     */
+    @GetMapping("/recover/code")
+    public Result<String> getVerifyCode2(HttpServletRequest request, String email) {
+        log.info("获取邮箱验证码，email：{}", email);
+
+        // 生成验证码，发送邮件
+        String userId = AuthContextHolder.getUserId(request);
+        userInfoService.generateCode(userId, email);
+
+        return Result.ok();
+    }
+
+    /**
+     * 校验验证码，记录用户注册、更新密码信息
+     *
+     * @param password 用户密码
+     * @param code     验证码
+     * @return {@code Result<String>}
+     */
+    @PostMapping("/verify")
+    public Result<String> userRegister(HttpServletRequest request, String password, String code) {
+        log.info("校验验证码，记录信息，code：{}", code);
+
+        String userId = AuthContextHolder.getUserId(request);
+        userInfoService.setUserInfo(userId, password, code);
+        return Result.ok();
+    }
+
+    /**
+     * 修改个人信息
+     *
+     * @param userInfo 个人信息详情
+     * @return {@code Result<String>}
+     */
+    @PutMapping("/info")
+    public Result<String> setUserInfo(HttpServletRequest request, UserInfo userInfo) {
+        log.info("修改个人信息，userInfo：{}", userInfo);
+
+        String userId = AuthContextHolder.getUserId(request);
+        userInfoService.updateUserInfo(userId, userInfo);
+        return Result.ok();
+    }
+
+    /**
+     * 分页获取用户地址列表
+     *
+     * @param page 当前页面
+     * @param size 页面大小
+     * @return {@code Result<IPage<UserAddress>>}
+     */
+    @GetMapping("/address")
+    public Result<IPage<UserAddress>> getAddress(HttpServletRequest request, Integer page, Integer size) {
+        log.info("分页获取用户地址列表，page：{}，size：{}", page, size);
+
+        String userId = AuthContextHolder.getUserId(request);
+        IPage<UserAddress> addressIPage = userAddressService.getUserAddress(userId, page, size);
+        return Result.ok(addressIPage);
+    }
+
+    /**
+     * 新增用户地址
+     *
+     * @param userAddress 用户地址详情
+     * @return {@code Result<String>}
+     */
+    @PostMapping("/address")
+    public Result<String> saveAddress(HttpServletRequest request, UserAddress userAddress) {
+        log.info("新增用户地址，userAddress：{}", userAddress);
+
+        String userId = AuthContextHolder.getUserId(request);
+        userAddressService.saveAddress(userId, userAddress);
+        return Result.ok();
+    }
+
+    /**
+     * 更新用户地址
+     *
+     * @param userAddress 用户地址详情
+     * @return {@code Result<String>}
+     */
+    @PutMapping("/address")
+    public Result<String> updateAddress(HttpServletRequest request, UserAddress userAddress) {
+        log.info("更新用户地址，userAddress：{}", userAddress);
+
+        String userId = AuthContextHolder.getUserId(request);
+        userAddressService.updateAddress(userId, userAddress);
+        return Result.ok();
+    }
+
+    /**
+     * 删除用户地址
+     *
+     * @param userAddressId 用户地址id
+     * @return {@code Result<String>}
+     */
+    @DeleteMapping("/address")
+    public Result<String> delAddress(HttpServletRequest request, String userAddressId) {
+        log.info("删除用户地址，userAddressId：{}", userAddressId);
+
+        String userId = AuthContextHolder.getUserId(request);
+        userAddressService.delAddress(userId, userAddressId);
+        return Result.ok();
+    }
+
+
+
 }

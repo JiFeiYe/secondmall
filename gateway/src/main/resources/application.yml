@@ -1,26 +1,29 @@
 server:
   port: 80
-spring:
-  cloud:
-    gateway:
-      discovery:
-        locator:
-          enabled: true
-      routes:
-        - id: service-test-route
-          uri: lb://test
-          predicates:
-            - Path=/my/** # 匹配api路径
-        - id: service-user-route
-          uri: lb://service-user
-          predicates:
-            - Path=/api1/**
 knife4j:
   gateway:
     enabled: true # 开启gateway聚合组件
     strategy: discover # 聚合模式采用discover服务发现的模式
     discover:
       enabled: true # 开启discover模式
-      version: swagger2 # 聚合子服务全部为Swagger2规范的文档
+      version: swagger2 # 聚合子服务全部为swagger2规范的文档
+      excluded-services:
+        - gateway
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: service-user-route
+          uri: lb://service-user
+          predicates:
+            - Path=/front/user/**
+          filters:
+            - StripPrefix=2
+  main:
+    allow-bean-definition-overriding: true
 freeUrls:
-  url: login,v2
+  url: login,v2,swagger
