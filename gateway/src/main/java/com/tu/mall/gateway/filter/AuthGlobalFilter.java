@@ -45,18 +45,6 @@ public class AuthGlobalFilter implements GlobalFilter {
         for (String freeUrl : StrUtil.split(freeUrls, ",")) {
             if (StrUtil.indexOf(url, freeUrl, 0, false) != -1) { // 包含
                 System.out.println(url + "是免权限路径，通过。");
-//                if ("v2".equals(freeUrl)) {
-//                    int i = StrUtil.indexOf(url, "/v2", 0, false);
-//                    if (-1 != i) {
-//                        url = StrUtil.subSuf(url, i);
-//                        System.out.println("格式化文档相关api：" + url);
-//                    }
-//                    request = request
-//                            .mutate()
-//                            .uri(URI.create(url))
-//                            .build();
-//                    exchange.mutate().request(request).build();
-//                }
                 return chain.filter(exchange);
             }
         }

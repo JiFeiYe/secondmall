@@ -19,7 +19,7 @@ import java.util.List;
  * @since 2024/10/11
  */
 @RestController
-@RequestMapping("/my")
+@RequestMapping // "/test"
 public class TestController {
 
     @Autowired

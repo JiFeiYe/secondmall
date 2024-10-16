@@ -23,7 +23,25 @@ spring:
             - Path=/front/user/**
           filters:
             - StripPrefix=2
+        - id: service-goods-route
+          uri: lb://service-goods
+          predicates:
+            - Path=/front/goods/**
+          filters:
+            - StripPrefix=2
+        - id: service-test-route
+          uri: lb://test
+          predicates:
+            - Path=/test/**
+          filters:
+            - StripPrefix=1
+        - id: service-test2-route
+          uri: lb://test2
+          predicates:
+            - Path=/test2/**
+          filters:
+            - StripPrefix=1
   main:
     allow-bean-definition-overriding: true
 freeUrls:
-  url: login,v2,swagger
+  url: v2,/login,/register/code

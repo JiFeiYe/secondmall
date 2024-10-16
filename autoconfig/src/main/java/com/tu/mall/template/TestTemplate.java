@@ -11,6 +11,7 @@ import com.tu.mall.properties.TestProperties;
 public class TestTemplate {
     private final TestProperties testProperties;
 
+    // 这是一个构造函数注入！将TestProperties作为一个bean注入进来了
     public TestTemplate(TestProperties testProperties) {
         this.testProperties = testProperties;
     }

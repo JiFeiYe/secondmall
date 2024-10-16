@@ -18,7 +18,7 @@ public interface IUserInfoService {
 
     void verifyEmail(String email);
 
-    void generateCode(String userId, String email);
+    void generateCode(UserInfo userInfo);
 
     void setUserInfo(String userId, String password, String code);
 

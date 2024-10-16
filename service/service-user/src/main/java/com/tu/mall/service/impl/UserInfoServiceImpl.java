@@ -72,20 +72,27 @@ public class UserInfoServiceImpl implements IUserInfoService {
     }
 
     @Override
-    public void generateCode(String userId, String email) {
+    public void generateCode(UserInfo userInfo) {
+        // 已存在的账号，补全账号信息
+        UserInfo u = userInfoMapper.selectById(userInfo.getUserId());
+        if (ObjectUtil.isNotNull(u)) {
+            userInfo = u;
+        }
+
         // 生成验证码
         SecureRandom random = new SecureRandom();
         int i = random.nextInt(1000000); // 生成一个0到999999之间的随机数
         String code = String.format("%06d", i); // 将数字转换为六位数的字符串
 
         // 保存进redis
-        String key = "Verify_Email_Code_" + userId;
+        String key = "Verify_Email_Code_" + userInfo.getUserId().toString();
         HashMap<Object, Object> value = MapUtil.of(new String[][]{
-                {"email", email},
+                {"name", userInfo.getName()},
+                {"email", userInfo.getEmail()},
                 {"code", code}
         });
         String jsonValue = JSONUtil.toJsonStr(value);
-        redisTemplate.opsForValue().set(key, jsonValue, 5, TimeUnit.MINUTES); // // 过期时间五分钟
+        redisTemplate.opsForValue().set(key, jsonValue, 5, TimeUnit.MINUTES); // 过期时间五分钟
 
         // 发送邮件
 //        mailService.sendHTMLMail(email, code);
@@ -94,17 +101,23 @@ public class UserInfoServiceImpl implements IUserInfoService {
     // 新增、更新用户信息
     @Override
     public void setUserInfo(String userId, String password, String code) {
+        // 从redis获取信息
         String key = "Verify_Email_Code_" + userId;
         String redisMap = redisTemplate.opsForValue().getAndDelete(key);
         JSONObject jsonObject = JSONUtil.parseObj(redisMap);
+        String name = jsonObject.getStr("name");
         String email = jsonObject.getStr("email");
         String redisCode = jsonObject.getStr("code");
+        // 验证验证码
         if (!StrUtil.equals(redisCode, code)) { // 验证码无效
             throw new CustomException(ResultCodeEnum.CODE_FAIL);
         }
+        // 加密
         password = DigestUtils.md5DigestAsHex(password.getBytes(StandardCharsets.UTF_8));
+        // 设置用户信息
         UserInfo userInfo = new UserInfo()
                 .setUserId(Long.valueOf(userId))
+                .setName(name)
                 .setEmail(email)
                 .setPassword(password);
         userInfoMapper.insertOrUpdate(userInfo);

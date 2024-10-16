@@ -1,9 +1,12 @@
 package com.tu.mall.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.tu.mall.common.result.Result;
 import com.tu.mall.common.result.ResultCodeEnum;
 import com.tu.mall.common.utils.AuthContextHolder;
+import com.tu.mall.common.utils.JWTUtil;
 import com.tu.mall.entity.UserAddress;
 import com.tu.mall.entity.UserInfo;
 import com.tu.mall.service.IUserAddressService;
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -55,34 +59,44 @@ public class UserController {
      * 需验证邮箱未注册
      *
      * @param email 用户邮箱
-     * @return {@code Result<String>}
+     * @return {@code Result<Map<String, String>>}
      */
     @GetMapping("/register/code")
-    public Result<String> getVerifyCode(HttpServletRequest request, String email) {
+    public Result<Map<String, String>> getRegisterCode(String email) {
         log.info("获取邮箱验证码，email：{}", email);
 
         // 验证邮箱未注册
         userInfoService.verifyEmail(email);
         // 生成验证码，发送邮件
-        String userId = AuthContextHolder.getUserId(request);
-        userInfoService.generateCode(userId, email);
+        UserInfo userInfo = new UserInfo();
+        String userId = String.valueOf(IdWorker.getId(userInfo)); // todo 非原子操作？是否导致id不再单调递增？是否会有id冲突？
+        userInfo.setUserId(Long.valueOf(userId))
+                .setEmail(email)
+                .setName("默认用户_" + StrUtil.sub(userId, 0, 14));
+        userInfoService.generateCode(userInfo);
 
-        return Result.ok();
+        // 生成JWT
+        String token = JWTUtil.getToken(userInfo.getUserId());
+        Map<String, String> map = new HashMap<>();
+        map.put("token", token);
+        map.put("name", userInfo.getName());
+        return Result.ok(map);
     }
 
     /**
      * 同上一个方法，但不用验证邮箱未注册
      *
-     * @param email 用户邮箱
      * @return {@code Result<String>}
      */
     @GetMapping("/recover/code")
-    public Result<String> getVerifyCode2(HttpServletRequest request, String email) {
-        log.info("获取邮箱验证码，email：{}", email);
+    public Result<String> getRecoverCode(HttpServletRequest request) {
+        log.info("获取邮箱验证码");
 
         // 生成验证码，发送邮件
         String userId = AuthContextHolder.getUserId(request);
-        userInfoService.generateCode(userId, email);
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserId(Long.valueOf(userId));
+        userInfoService.generateCode(userInfo);
 
         return Result.ok();
     }
@@ -95,7 +109,7 @@ public class UserController {
      * @return {@code Result<String>}
      */
     @PostMapping("/verify")
-    public Result<String> userRegister(HttpServletRequest request, String password, String code) {
+    public Result<String> setUserInfo(HttpServletRequest request, String password, String code) {
         log.info("校验验证码，记录信息，code：{}", code);
 
         String userId = AuthContextHolder.getUserId(request);
@@ -110,7 +124,7 @@ public class UserController {
      * @return {@code Result<String>}
      */
     @PutMapping("/info")
-    public Result<String> setUserInfo(HttpServletRequest request, UserInfo userInfo) {
+    public Result<String> updateUserInfo(HttpServletRequest request, UserInfo userInfo) {
         log.info("修改个人信息，userInfo：{}", userInfo);
 
         String userId = AuthContextHolder.getUserId(request);
@@ -178,7 +192,6 @@ public class UserController {
         userAddressService.delAddress(userId, userAddressId);
         return Result.ok();
     }
-
 
 
 }

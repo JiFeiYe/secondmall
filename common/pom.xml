@@ -57,12 +57,6 @@
             <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
         </dependency>
 
-        <!--用来转换json使用 {JavaObject - json | json - JavaObject}-->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
