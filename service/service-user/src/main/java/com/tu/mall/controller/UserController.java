@@ -124,7 +124,7 @@ public class UserController {
      * @return {@code Result<String>}
      */
     @PutMapping("/info")
-    public Result<String> updateUserInfo(HttpServletRequest request, UserInfo userInfo) {
+    public Result<String> updateUserInfo(HttpServletRequest request, @RequestBody UserInfo userInfo) {
         log.info("修改个人信息，userInfo：{}", userInfo);
 
         String userId = AuthContextHolder.getUserId(request);
@@ -155,7 +155,7 @@ public class UserController {
      * @return {@code Result<String>}
      */
     @PostMapping("/address")
-    public Result<String> saveAddress(HttpServletRequest request, UserAddress userAddress) {
+    public Result<String> saveAddress(HttpServletRequest request, @RequestBody UserAddress userAddress) {
         log.info("新增用户地址，userAddress：{}", userAddress);
 
         String userId = AuthContextHolder.getUserId(request);
@@ -170,7 +170,7 @@ public class UserController {
      * @return {@code Result<String>}
      */
     @PutMapping("/address")
-    public Result<String> updateAddress(HttpServletRequest request, UserAddress userAddress) {
+    public Result<String> updateAddress(HttpServletRequest request, @RequestBody UserAddress userAddress) {
         log.info("更新用户地址，userAddress：{}", userAddress);
 
         String userId = AuthContextHolder.getUserId(request);
