@@ -15,6 +15,6 @@ public class StrUtilTest {
 
         int i = StrUtil.indexOf(url, "/v2", 0, false);
         url = StrUtil.subSuf(url, i);
-        System.out.println(i + " " +  url);
+        System.out.println(i + " " + url);
     }
 }

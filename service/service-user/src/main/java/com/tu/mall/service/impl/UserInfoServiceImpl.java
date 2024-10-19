@@ -6,6 +6,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tu.mall.common.exception.CustomException;
 import com.tu.mall.common.result.ResultCodeEnum;
 import com.tu.mall.common.utils.JWTUtil;
@@ -124,9 +126,40 @@ public class UserInfoServiceImpl implements IUserInfoService {
     }
 
     @Override
-    public void updateUserInfo(String userId, UserInfo userInfo) {
-        userInfo.setUserId(Long.valueOf(userId));
+    public void updateUserInfo(UserInfo userInfo) {
         userInfoMapper.updateById(userInfo);
+    }
+
+    @Override
+    public Map<String, String> loginAdmin(String account, String password) {
+        // 验证账号存在
+        LambdaQueryWrapper<UserInfo> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(UserInfo::getAccount, account);
+        UserInfo userInfo = userInfoMapper.selectOne(lqw);
+        if (ObjectUtil.isNull(userInfo)) {
+            return null;
+        }
+        // 验证密码
+        String md5Pwd = userInfo.getPassword(); // 加密后的
+        String md5Password = DigestUtils.md5DigestAsHex(password.getBytes(StandardCharsets.UTF_8));
+        System.out.println("md5Password:" + md5Password);
+        if (!StrUtil.equals(md5Pwd, md5Password)) {
+            return null;
+        }
+        // 生成JWT
+        String token = JWTUtil.getToken(userInfo.getUserId());
+        Map<String, String> map = new HashMap<>();
+        map.put("token", token);
+        map.put("name", userInfo.getName());
+        return map;
+    }
+
+    @Override
+    public IPage<UserInfo> getUserInfoByPage(Integer page, Integer size, Integer identity) {
+        IPage<UserInfo> userInfoIPage = new Page<>(page, size);
+        LambdaQueryWrapper<UserInfo> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(UserInfo::getIdentity, identity);
+        return userInfoMapper.selectPage(userInfoIPage, lqw);
     }
 
 }

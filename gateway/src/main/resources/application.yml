@@ -16,17 +16,23 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
-      routes:
+      routes: # 管理员服务不参与网关调控
         - id: service-user-route
           uri: lb://service-user
           predicates:
             - Path=/front/user/**
           filters:
             - StripPrefix=2
-        - id: service-goods-route
-          uri: lb://service-goods
+        - id: service-good-route
+          uri: lb://service-good
           predicates:
             - Path=/front/goods/**
+          filters:
+            - StripPrefix=2
+        - id: service-search-route # todo 上线时删除该路由
+          uri: lb://service-search
+          predicates:
+            - Path=/front/search/**
           filters:
             - StripPrefix=2
         - id: service-test-route
@@ -41,7 +47,5 @@ spring:
             - Path=/test2/**
           filters:
             - StripPrefix=1
-  main:
-    allow-bean-definition-overriding: true
 freeUrls:
   url: v2,/login,/register/code

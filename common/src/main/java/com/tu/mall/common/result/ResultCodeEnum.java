@@ -16,6 +16,7 @@ public enum ResultCodeEnum {
     LOGIN_FAIL(4002, "登录失败"),
     CODE_FAIL(4003, "验证码无效"),
     ACCOUNT_EXIST(4004, "账户已存在"),
+    UPLOAD_FAIL(4005, "文件上传失败"),
 
     // 自定义异常CustomException返回
     EMAIL_FAIL(5001, "邮件发送失败"),

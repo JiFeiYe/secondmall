@@ -128,7 +128,8 @@ public class UserController {
         log.info("修改个人信息，userInfo：{}", userInfo);
 
         String userId = AuthContextHolder.getUserId(request);
-        userInfoService.updateUserInfo(userId, userInfo);
+        userInfo.setUserId(Long.valueOf(userId));
+        userInfoService.updateUserInfo(userInfo);
         return Result.ok();
     }
 

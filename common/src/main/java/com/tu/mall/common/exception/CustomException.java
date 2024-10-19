@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class CustomException extends RuntimeException{
+public class CustomException extends RuntimeException {
 
     // 异常状态码
     private Integer errCode;

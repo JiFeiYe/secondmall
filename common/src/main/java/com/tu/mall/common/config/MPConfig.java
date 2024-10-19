@@ -29,6 +29,11 @@ public class MPConfig {
         return interceptor;
     }
 
+    @Bean
+    public MPHandler mpHandler() {
+        return new MPHandler();
+    }
+
     // 配置自动填充字段工具
     public static class MPHandler implements MetaObjectHandler {
         @Override
@@ -42,10 +47,5 @@ public class MPConfig {
             log.info("开始更新填充...");
             this.strictUpdateFill(metaObject, "updateTime", LocalDateTime.class, LocalDateTime.now());
         }
-    }
-
-    @Bean
-    public MPHandler mpHandler() {
-        return new MPHandler();
     }
 }
