@@ -1,6 +1,5 @@
 package com.tu.mall;
 
-import cn.hutool.json.JSONConfig;
 import cn.hutool.json.JSONUtil;
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.search.SearchRequest;
@@ -23,7 +22,7 @@ import java.io.IOException;
  */
 //@SpringBootTest
 //@RunWith(SpringRunner.class)
-public class TestEs1{
+public class TestEs1 {
     private RestHighLevelClient client;
 
     @BeforeEach
@@ -39,14 +38,14 @@ public class TestEs1{
     }
 
     private void handleResponse(SearchResponse response) {
-        // 4.解析响应
+        // 解析响应
         SearchHits searchHits = response.getHits();
-        // 4.1.获取总条数
+        // 获取总条数
         long total = searchHits.getTotalHits().value;
         System.out.println("共搜索到" + total + "条数据");
-        // 4.2.文档数组
+        // 文档数组
         SearchHit[] hits = searchHits.getHits();
-        // 4.3.遍历
+        // 遍历
         for (SearchHit hit : hits) {
             // 获取文档source
             String json = hit.getSourceAsString();
