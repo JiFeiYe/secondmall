@@ -1,15 +1,12 @@
 package com.tu.mall.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import java.time.LocalDateTime;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -37,11 +34,6 @@ public class Attribute implements Serializable {
      * 属性名称
      */
     private String name;
-
-    /**
-     * 属性类别（0基本属性，1销售属性）
-     */
-    private Integer type;
 
     /**
      * 对应三级分类id

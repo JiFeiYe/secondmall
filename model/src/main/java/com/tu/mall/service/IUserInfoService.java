@@ -1,5 +1,6 @@
 package com.tu.mall.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.tu.mall.entity.UserInfo;
 
 import java.util.Map;
@@ -22,5 +23,9 @@ public interface IUserInfoService {
 
     void setUserInfo(String userId, String password, String code);
 
-    void updateUserInfo(String userId, UserInfo userInfo);
+    void updateUserInfo(UserInfo userInfo);
+
+    Map<String, String> loginAdmin(String account, String password);
+
+    IPage<UserInfo> getUserInfoByPage(Integer page, Integer size, Integer identity);
 }

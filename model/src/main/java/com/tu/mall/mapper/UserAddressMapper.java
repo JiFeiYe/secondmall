@@ -1,7 +1,7 @@
 package com.tu.mall.mapper;
 
-import com.tu.mall.entity.UserAddress;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.tu.mall.entity.UserAddress;
 
 /**
  * <p>

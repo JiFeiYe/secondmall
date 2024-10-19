@@ -1,15 +1,12 @@
 package com.tu.mall.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import java.time.LocalDateTime;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -17,7 +14,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author JiFeiYe
- * @since 2024-10-10
+ * @since 2024-10-17
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -42,16 +39,10 @@ public class SkuAttributeValue implements Serializable {
      * 基本/销售属性id
      */
     private Long attrId;
-
     /**
      * 基本/销售属性值id
      */
     private Long attrValueId;
-
-    /**
-     * 0基本属性，1销售属性
-     */
-    private Integer type;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

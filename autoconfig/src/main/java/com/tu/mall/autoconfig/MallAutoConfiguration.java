@@ -1,7 +1,7 @@
 package com.tu.mall.autoconfig;
 
-import com.tu.mall.properties.TestProperties;
-import com.tu.mall.template.TestTemplate;
+import com.tu.mall.properties.OSSProperties;
+import com.tu.mall.template.OSSTemplate;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
@@ -13,11 +13,12 @@ import org.springframework.context.annotation.Bean;
  * @since 2024/9/26
  */
 @EnableConfigurationProperties({
-        com.tu.mall.properties.TestProperties.class
+        com.tu.mall.properties.OSSProperties.class
 })
 public class MallAutoConfiguration {
+
     @Bean
-    public TestTemplate testTemplate(TestProperties testProperties) {
-        return new TestTemplate(testProperties);
+    public OSSTemplate ossTemplate(OSSProperties ossProperties) {
+        return new OSSTemplate(ossProperties);
     }
 }

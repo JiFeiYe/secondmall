@@ -1,16 +1,15 @@
 package com.tu.mall.entity;
 
-import java.math.BigDecimal;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import java.time.LocalDateTime;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -29,6 +28,22 @@ public class SkuInfo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 图片文件列表
+     */
+    @TableField(exist = false)
+    private List<MultipartFile> imgFileList;
+    /**
+     * 图片列表
+     */
+    @TableField(exist = false)
+    private List<SkuImg> skuImgList;
+    /**
+     * 属性列表
+     */
+    @TableField(exist = false)
+    private List<SkuAttributeValue> skuAttributeValueList;
+
+    /**
      * 雪花id
      */
     @TableId(value = "id", type = IdType.ASSIGN_ID)
@@ -37,12 +52,12 @@ public class SkuInfo implements Serializable {
     /**
      * 用户id
      */
-    private Integer userId;
+    private Long userId;
 
     /**
      * 商品标题
      */
-    private Integer titile;
+    private String title;
 
     /**
      * 商品描述
