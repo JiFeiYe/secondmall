@@ -1,5 +1,6 @@
 package com.tu.mall.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
@@ -14,6 +15,7 @@ import com.tu.mall.service.ISkuInfoService;
 import com.tu.mall.template.OSSTemplate;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -38,35 +40,42 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
     private SkuAttributeValueMapper skuAttributeValueMapper;
 
     @Override
-    public SkuInfo saveGoods(String userId, SkuInfo skuInfo) {
+    @Transactional
+    public SkuInfo saveGoods(SkuInfo skuInfo) {
         // 保存skuInfo
-        skuInfo.setUserId(Long.valueOf(userId));
-        skuInfo.setStatus(0); // 尚未上架es
-        long skuId = IdWorker.getId(skuInfo);
-        skuInfo.setId(skuId);
-        skuInfoMapper.insert(skuInfo);
+        {
+            skuInfo.setStatus(0); // 尚未上架es
+            skuInfoMapper.insert(skuInfo);
+        }
 
         // 保存skuImg
-        List<MultipartFile> imgList = skuInfo.getImgFileList();
-        List<SkuImg> imgs = new ArrayList<>();
-        // 上传oss
-        for (MultipartFile multipartFile : imgList) {
-            String url = ossTemplate.upload(multipartFile);
-            SkuImg skuImg = new SkuImg();
-            skuImg.setSkuId(skuId);
-            skuImg.setName(url.substring(url.lastIndexOf("/") + 1));
-            skuImg.setUrl(url);
-            skuImg.setId(IdWorker.getId(skuImg));
-            imgs.add(skuImg);
+        {
+            List<MultipartFile> imgFileList = skuInfo.getImgFileList();
+            if (imgFileList != null && CollUtil.isNotEmpty(imgFileList)) {
+                List<SkuImg> skuImgList = new ArrayList<>();
+                // 上传oss
+                for (MultipartFile multipartFile : imgFileList) {
+                    String url = ossTemplate.upload(multipartFile);
+                    SkuImg skuImg = new SkuImg();
+                    skuImg.setSkuId(skuInfo.getId());
+                    skuImg.setName(url.substring(url.lastIndexOf("/") + 1));
+                    skuImg.setUrl(url);
+                    skuImg.setId(IdWorker.getId(skuImg));
+                    skuImgList.add(skuImg);
+                }
+                skuImgMapper.insert(skuImgList);
+                skuInfo.setSkuImgList(skuImgList);
+            }
         }
-        skuImgMapper.insert(imgs);
-        skuInfo.setSkuImgList(imgs);
 
         // 保存sku_attribute_value
-        skuInfo.getSkuAttributeValueList().forEach(skuAttributeValue -> {
-            skuAttributeValueMapper.insert(skuAttributeValue);
-        });
-
+        {
+            List<SkuAttributeValue> skuAttributeValueList = skuInfo.getSkuAttributeValueList();
+            if (skuAttributeValueList != null && CollUtil.isNotEmpty(skuAttributeValueList)) {
+                skuAttributeValueMapper.insert(skuAttributeValueList);
+                skuInfo.setSkuAttributeValueList(skuAttributeValueList);
+            }
+        }
         return skuInfo;
     }
 
@@ -75,10 +84,29 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
         IPage<SkuInfo> skuInfoIpage = new Page<>(page, size);
         LambdaQueryWrapper<SkuInfo> lqw = new LambdaQueryWrapper<>();
         lqw.eq(SkuInfo::getUserId, userId);
-        return skuInfoMapper.selectPage(skuInfoIpage, lqw);
+        skuInfoIpage = skuInfoMapper.selectPage(skuInfoIpage, lqw);
+        List<SkuInfo> skuInfoList = new ArrayList<>();
+        for (SkuInfo skuInfo : skuInfoIpage.getRecords()) {
+            // 补充图片信息
+            Long skuId = skuInfo.getId();
+            LambdaQueryWrapper<SkuImg> lqw1 = new LambdaQueryWrapper<>();
+            lqw1.eq(SkuImg::getSkuId, skuId);
+            List<SkuImg> skuImgList = skuImgMapper.selectList(lqw1);
+            skuInfo.setSkuImgList(skuImgList);
+            // 补充属性信息
+            LambdaQueryWrapper<SkuAttributeValue> lqw2 = new LambdaQueryWrapper<>();
+            lqw2.eq(SkuAttributeValue::getSkuId, skuId);
+            List<SkuAttributeValue> skuAttributeValueList = skuAttributeValueMapper.selectList(lqw2);
+            skuInfo.setSkuAttributeValueList(skuAttributeValueList);
+
+            skuInfoList.add(skuInfo);
+        }
+        skuInfoIpage.setRecords(skuInfoList);
+        return skuInfoIpage;
     }
 
     @Override
+    @Transactional
     public void updateGoods(String userId, SkuInfo skuInfo) {
         // 更新skuInfo
         {
@@ -89,38 +117,70 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
         // 更新skuImg（文件形式的直接上传oss并插入数据库）
         {
             List<SkuImg> imgs = new ArrayList<>();
-            skuInfo.getImgFileList().forEach(file -> {
-                String url = ossTemplate.upload(file);
-                SkuImg skuImg = new SkuImg();
-                skuImg.setSkuId(skuInfo.getId());
-                skuImg.setName(url.substring(url.lastIndexOf("/") + 1));
-                skuImg.setUrl(url);
-                imgs.add(skuImg);
-            });
-            skuImgMapper.insert(imgs);
+            List<MultipartFile> imgFileList = skuInfo.getImgFileList();
+            if (imgFileList != null && CollUtil.isNotEmpty(imgFileList)) {
+                imgFileList.forEach(file -> {
+                    String url = ossTemplate.upload(file);
+                    SkuImg skuImg = new SkuImg();
+                    skuImg.setSkuId(skuInfo.getId());
+                    skuImg.setName(url.substring(url.lastIndexOf("/") + 1));
+                    skuImg.setUrl(url);
+                    imgs.add(skuImg);
+                });
+                skuImgMapper.insert(imgs);
+            }
             // 删除与skuImgList无法匹配的表中数据（局限于某一个skuId）
             List<SkuImg> skuImgList = skuInfo.getSkuImgList();
-            List<Long> ids = skuImgList.stream().map(SkuImg::getId).collect(Collectors.toList());
-            LambdaQueryWrapper<SkuImg> lqw = new LambdaQueryWrapper<>();
-            lqw.eq(SkuImg::getSkuId, skuInfo.getId())
-                    .notIn(SkuImg::getId, ids);
-            skuImgMapper.delete(lqw);
+            if (skuImgList != null) {
+                if (CollUtil.isNotEmpty(imgs)) {
+                    skuImgList.addAll(imgs);
+                }
+                List<Long> ids = skuImgList.stream().map(SkuImg::getId).collect(Collectors.toList());
+                LambdaQueryWrapper<SkuImg> lqw = new LambdaQueryWrapper<>();
+                lqw.eq(SkuImg::getSkuId, skuInfo.getId())
+                        .notIn(SkuImg::getId, ids);
+                skuImgMapper.delete(lqw);
+            } else { // 删除全部
+                List<SkuImg> skuImgs = new ArrayList<>();
+                if (CollUtil.isNotEmpty(imgs)) {
+                    skuImgs.addAll(imgs);
+                }
+                List<Long> ids = skuImgs.stream().map(SkuImg::getId).collect(Collectors.toList());
+                LambdaQueryWrapper<SkuImg> lqw = new LambdaQueryWrapper<>();
+                lqw.eq(SkuImg::getSkuId, skuInfo.getId())
+                        .notIn(SkuImg::getId, ids);
+                skuImgMapper.delete(lqw);
+            }
+            LambdaQueryWrapper<SkuImg> lqw= new LambdaQueryWrapper<>();
+            lqw.eq(SkuImg::getSkuId, skuInfo.getId());
+            skuInfo.setSkuImgList(skuImgMapper.selectList(lqw));
         }
 
         // 更新sku_attribute_value
         {
-            List<Long> ids = skuInfo.getSkuAttributeValueList()
-                    .stream()
-                    .map(SkuAttributeValue::getId)
-                    .collect(Collectors.toList());
-            LambdaQueryWrapper<SkuAttributeValue> lqw = new LambdaQueryWrapper<>();
-            lqw.eq(SkuAttributeValue::getSkuId, skuInfo.getId())
-                    .notIn(SkuAttributeValue::getId, ids);
-            skuAttributeValueMapper.delete(lqw);
+            List<SkuAttributeValue> skuAttributeValueList = skuInfo.getSkuAttributeValueList();
+            if (skuAttributeValueList != null) {
+                List<Long> ids = skuAttributeValueList
+                        .stream()
+                        .map(SkuAttributeValue::getId)
+                        .collect(Collectors.toList());
+                LambdaQueryWrapper<SkuAttributeValue> lqw = new LambdaQueryWrapper<>();
+                lqw.eq(SkuAttributeValue::getSkuId, skuInfo.getId())
+                        .notIn(SkuAttributeValue::getId, ids);
+                skuAttributeValueMapper.delete(lqw);
+                LambdaQueryWrapper<SkuAttributeValue> lqw1 = new LambdaQueryWrapper<>();
+                lqw1.eq(SkuAttributeValue::getSkuId, skuInfo.getId());
+                skuInfo.setSkuAttributeValueList(skuAttributeValueMapper.selectList(lqw1));
+            } else { // 删除全部
+                LambdaQueryWrapper<SkuAttributeValue> lqw = new LambdaQueryWrapper<>();
+                lqw.eq(SkuAttributeValue::getSkuId, skuInfo.getId());
+                skuAttributeValueMapper.delete(lqw);
+            }
         }
     }
 
     @Override
+    @Transactional
     public void delGoods(Long skuId) {
         // 删除sku_attribute_value
         {
@@ -128,6 +188,7 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
             lqw.eq(SkuAttributeValue::getSkuId, skuId);
             skuAttributeValueMapper.delete(lqw);
         }
+
         // 删除图片
         {
             LambdaQueryWrapper<SkuImg> lqw = new LambdaQueryWrapper<>();
@@ -138,6 +199,7 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
             });
             skuImgMapper.delete(lqw);
         }
+
         // 删除商品
         {
             skuInfoMapper.deleteById(skuId);

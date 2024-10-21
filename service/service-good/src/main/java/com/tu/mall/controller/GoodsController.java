@@ -35,12 +35,14 @@ public class GoodsController {
      * @return {@code Result<String>}
      */
     @PostMapping
-    public Result<String> saveGoods(HttpServletRequest request, @RequestBody SkuInfo skuInfo) {
+    public Result<String> saveGoods(HttpServletRequest request, /*@RequestBody*/ SkuInfo skuInfo) {
         log.info("保存商品进mysql，skuInfo：{}", skuInfo);
 
         String userId = AuthContextHolder.getUserId(request);
-        SkuInfo skuInfo1 = skuInfoService.saveGoods(userId, skuInfo); // 填充skuInfo.skuImgList返回
+        skuInfo.setUserId(Long.valueOf(userId));
+        SkuInfo skuInfo1 = skuInfoService.saveGoods(skuInfo); // 填充skuInfo.skuImgList返回
         // todo 调用es上架方法
+        skuInfo1.setImgFileList(null);
         searchService.upperGoods(skuInfo1);
         return Result.ok();
     }
@@ -68,12 +70,13 @@ public class GoodsController {
      * @return {@code Result<String>}
      */
     @PutMapping
-    public Result<String> updateGoods(HttpServletRequest request, @RequestBody SkuInfo skuInfo) {
+    public Result<String> updateGoods(HttpServletRequest request, /*@RequestBody*/ SkuInfo skuInfo) {
         log.info("更新商品信息mysql，skuInfo：{}", skuInfo);
 
         String userId = AuthContextHolder.getUserId(request);
         skuInfoService.updateGoods(userId, skuInfo);
         // todo 调用es商品更新方法（下架后重新上架）
+        skuInfo.setImgFileList(null);
         searchService.lowerGoods(skuInfo.getId());
         searchService.upperGoods(skuInfo);
         return Result.ok();

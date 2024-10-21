@@ -16,7 +16,7 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
-      routes: # 管理员服务不参与网关调控
+      routes: # 管理员服务不参与网关调控，只在内网使用
         - id: service-user-route
           uri: lb://service-user
           predicates:

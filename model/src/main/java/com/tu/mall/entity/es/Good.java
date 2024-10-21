@@ -33,7 +33,7 @@ public class Good {
      * 商品标题
      */
     @Field(type = FieldType.Text, analyzer = "ik_max_word")
-    private Integer title;
+    private String title;
     /**
      * 商品描述
      */

@@ -38,7 +38,7 @@ public class OSSTemplate {
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
         // 上传进bucket位置，例如2024/10/17/fileName.jpg
-        String fileName = file.getName();
+        String fileName = file.getOriginalFilename();
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         String s = today.format(formatter);

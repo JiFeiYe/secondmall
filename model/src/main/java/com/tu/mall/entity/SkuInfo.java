@@ -74,6 +74,11 @@ public class SkuInfo implements Serializable {
      */
     private Integer status;
 
+    /**
+     * 三级分类id（冗余）
+     */
+    private Long categoryId;
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 

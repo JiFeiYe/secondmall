@@ -13,7 +13,7 @@ import com.tu.mall.entity.SkuInfo;
  */
 public interface ISkuInfoService {
 
-    SkuInfo saveGoods(String userId, SkuInfo skuInfo);
+    SkuInfo saveGoods(SkuInfo skuInfo);
 
     IPage<SkuInfo> getGoods(String userId, Integer page, Integer size);
 
