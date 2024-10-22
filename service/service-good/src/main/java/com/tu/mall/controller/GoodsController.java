@@ -1,6 +1,5 @@
 package com.tu.mall.controller;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tu.mall.api.SearchService;
 import com.tu.mall.common.result.Result;

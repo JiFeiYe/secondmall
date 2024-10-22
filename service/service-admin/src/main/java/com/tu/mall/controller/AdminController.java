@@ -1,6 +1,5 @@
 package com.tu.mall.controller;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tu.mall.common.result.Result;
 import com.tu.mall.common.result.ResultCodeEnum;
@@ -22,7 +21,7 @@ import java.util.Map;
 @Slf4j
 public class AdminController {
 
-    @Autowired
+    @DubboReference
     private IUserInfoService userInfoService;
 
     /**
@@ -47,7 +46,7 @@ public class AdminController {
      *
      * @param page 当前页面
      * @param size 页面大小
-     * @return {@code Result<IPage<UserInfo>>}
+     * @return {@code Result<Page<UserInfo>>}
      */
     @GetMapping("/user")
     public Result<Page<UserInfo>> getUserInfoByPage(Integer page, Integer size, Integer identity) {
