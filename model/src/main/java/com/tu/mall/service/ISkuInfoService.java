@@ -1,6 +1,6 @@
 package com.tu.mall.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tu.mall.entity.SkuInfo;
 
 /**
@@ -15,7 +15,7 @@ public interface ISkuInfoService {
 
     SkuInfo saveGoods(SkuInfo skuInfo);
 
-    IPage<SkuInfo> getGoods(String userId, Integer page, Integer size);
+    Page<SkuInfo> getGoods(String userId, Integer page, Integer size);
 
     void updateGoods(String userId, SkuInfo skuInfo);
 

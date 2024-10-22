@@ -1,6 +1,7 @@
 package com.tu.mall.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tu.mall.api.SearchService;
 import com.tu.mall.common.result.Result;
 import com.tu.mall.common.utils.AuthContextHolder;
@@ -52,15 +53,15 @@ public class GoodsController {
      *
      * @param page 当前页面
      * @param size 页面大小
-     * @return {@code Result<IPage<SkuInfo>>}
+     * @return {@code Result<Page<SkuInfo>>}
      */
     @GetMapping
-    public Result<IPage<SkuInfo>> getGoods(HttpServletRequest request, Integer page, Integer size) {
+    public Result<Page<SkuInfo>> getGoods(HttpServletRequest request, Integer page, Integer size) {
         log.info("分页查询当前用户已发布商品，page：{}，size：{}", page, size);
 
         String userId = AuthContextHolder.getUserId(request);
-        IPage<SkuInfo> skuInfoIPage = skuInfoService.getGoods(userId, page, size);
-        return Result.ok(skuInfoIPage);
+        Page<SkuInfo> skuInfoPage = skuInfoService.getGoods(userId, page, size);
+        return Result.ok(skuInfoPage);
     }
 
     /**

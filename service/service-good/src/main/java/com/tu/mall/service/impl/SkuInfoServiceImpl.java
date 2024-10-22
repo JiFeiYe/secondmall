@@ -80,13 +80,13 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
     }
 
     @Override
-    public IPage<SkuInfo> getGoods(String userId, Integer page, Integer size) {
-        IPage<SkuInfo> skuInfoIpage = new Page<>(page, size);
+    public Page<SkuInfo> getGoods(String userId, Integer page, Integer size) {
+        Page<SkuInfo> skuInfopage = new Page<>(page, size);
         LambdaQueryWrapper<SkuInfo> lqw = new LambdaQueryWrapper<>();
         lqw.eq(SkuInfo::getUserId, userId);
-        skuInfoIpage = skuInfoMapper.selectPage(skuInfoIpage, lqw);
+        skuInfopage = skuInfoMapper.selectPage(skuInfopage, lqw);
         List<SkuInfo> skuInfoList = new ArrayList<>();
-        for (SkuInfo skuInfo : skuInfoIpage.getRecords()) {
+        for (SkuInfo skuInfo : skuInfopage.getRecords()) {
             // 补充图片信息
             Long skuId = skuInfo.getId();
             LambdaQueryWrapper<SkuImg> lqw1 = new LambdaQueryWrapper<>();
@@ -101,8 +101,8 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
 
             skuInfoList.add(skuInfo);
         }
-        skuInfoIpage.setRecords(skuInfoList);
-        return skuInfoIpage;
+        skuInfopage.setRecords(skuInfoList);
+        return skuInfopage;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.tu.mall.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tu.mall.entity.UserInfo;
 
 import java.util.Map;
@@ -27,5 +27,5 @@ public interface IUserInfoService {
 
     Map<String, String> loginAdmin(String account, String password);
 
-    IPage<UserInfo> getUserInfoByPage(Integer page, Integer size, Integer identity);
+    Page<UserInfo> getUserInfoByPage(Integer page, Integer size, Integer identity);
 }

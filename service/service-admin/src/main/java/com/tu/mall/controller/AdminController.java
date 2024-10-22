@@ -1,12 +1,14 @@
 package com.tu.mall.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tu.mall.common.result.Result;
 import com.tu.mall.common.result.ResultCodeEnum;
 import com.tu.mall.entity.UserInfo;
 import com.tu.mall.service.IUserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -20,7 +22,7 @@ import java.util.Map;
 @Slf4j
 public class AdminController {
 
-    @DubboReference
+    @Autowired
     private IUserInfoService userInfoService;
 
     /**
@@ -48,7 +50,7 @@ public class AdminController {
      * @return {@code Result<IPage<UserInfo>>}
      */
     @GetMapping("/user")
-    public Result<IPage<UserInfo>> getUserInfoByPage(Integer page, Integer size, Integer identity) {
+    public Result<Page<UserInfo>> getUserInfoByPage(Integer page, Integer size, Integer identity) {
         log.info("获取用户信息列表，page：{}，size：{}", page, size);
 
         return Result.ok(userInfoService.getUserInfoByPage(page, size, identity));

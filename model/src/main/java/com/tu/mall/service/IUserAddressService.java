@@ -1,6 +1,7 @@
 package com.tu.mall.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tu.mall.entity.UserAddress;
 
 /**
@@ -13,7 +14,7 @@ import com.tu.mall.entity.UserAddress;
  */
 public interface IUserAddressService {
 
-    IPage<UserAddress> getUserAddress(String userId, Integer page, Integer size);
+    Page<UserAddress> getUserAddress(String userId, Integer page, Integer size);
 
     void saveAddress(String userId, UserAddress userAddress);
 

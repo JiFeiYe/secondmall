@@ -80,7 +80,7 @@ public class CategoryController {
     }
 
     /**
-     * 新增分类信息
+     * 新增or修改分类信息
      * <p>
      * 可能是新增一二三级分类，也可能新增二三级分类，也可能新增三级分类
      *
@@ -88,13 +88,19 @@ public class CategoryController {
      * @return {@code Result<String>}
      */
     @PostMapping("/category")
-    public Result<String> saveCategory(@RequestBody CategoryView categoryView) {
-        log.info("添加分类信息，categoryView：{}",categoryView);
+    public Result<String> setCategory(@RequestBody CategoryView categoryView) {
+        log.info("添加or修改分类信息，categoryView：{}",categoryView);
 
         categoryService.setCategory(categoryView);
         return Result.ok();
     }
 
+    /**
+     * 删除分类信息
+     *
+     * @param categoryView 全部分类视图
+     * @return {@code Result<String>}
+     */
     @DeleteMapping("/category")
     public Result<String> delCategory(@RequestBody CategoryView categoryView) {
         log.info("删除分类信息，categoryView：{}",categoryView);

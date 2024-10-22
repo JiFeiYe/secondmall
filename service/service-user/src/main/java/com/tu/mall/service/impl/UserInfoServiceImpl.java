@@ -155,11 +155,11 @@ public class UserInfoServiceImpl implements IUserInfoService {
     }
 
     @Override
-    public IPage<UserInfo> getUserInfoByPage(Integer page, Integer size, Integer identity) {
-        IPage<UserInfo> userInfoIPage = new Page<>(page, size);
+    public Page<UserInfo> getUserInfoByPage(Integer page, Integer size, Integer identity) {
+        Page<UserInfo> userInfoPage = new Page<>(page, size);
         LambdaQueryWrapper<UserInfo> lqw = new LambdaQueryWrapper<>();
         lqw.eq(UserInfo::getIdentity, identity);
-        return userInfoMapper.selectPage(userInfoIPage, lqw);
+        return userInfoMapper.selectPage(userInfoPage, lqw);
     }
 
 }

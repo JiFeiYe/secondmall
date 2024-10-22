@@ -3,6 +3,7 @@ package com.tu.mall.controller;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tu.mall.common.result.Result;
 import com.tu.mall.common.result.ResultCodeEnum;
 import com.tu.mall.common.utils.AuthContextHolder;
@@ -138,15 +139,15 @@ public class UserController {
      *
      * @param page 当前页面
      * @param size 页面大小
-     * @return {@code Result<IPage<UserAddress>>}
+     * @return {@code Result<Page<UserAddress>>}
      */
     @GetMapping("/address")
-    public Result<IPage<UserAddress>> getAddress(HttpServletRequest request, Integer page, Integer size) {
+    public Result<Page<UserAddress>> getAddress(HttpServletRequest request, Integer page, Integer size) {
         log.info("分页获取用户地址列表，page：{}，size：{}", page, size);
 
         String userId = AuthContextHolder.getUserId(request);
-        IPage<UserAddress> addressIPage = userAddressService.getUserAddress(userId, page, size);
-        return Result.ok(addressIPage);
+        Page<UserAddress> addressPage = userAddressService.getUserAddress(userId, page, size);
+        return Result.ok(addressPage);
     }
 
     /**

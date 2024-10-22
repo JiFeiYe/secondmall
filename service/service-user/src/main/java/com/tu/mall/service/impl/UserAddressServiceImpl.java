@@ -21,8 +21,8 @@ public class UserAddressServiceImpl implements IUserAddressService {
 
     // 分页获取用户地址
     @Override
-    public IPage<UserAddress> getUserAddress(String userId, Integer page, Integer size) {
-        IPage<UserAddress> pages = new Page<>(page, size);
+    public Page<UserAddress> getUserAddress(String userId, Integer page, Integer size) {
+        Page<UserAddress> pages = new Page<>(page, size);
         LambdaQueryWrapper<UserAddress> lqw = new LambdaQueryWrapper<>();
         lqw.eq(UserAddress::getUserId, Long.valueOf(userId));
         return userAddressMapper.selectPage(pages, lqw);

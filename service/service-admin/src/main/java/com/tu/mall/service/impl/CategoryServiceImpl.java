@@ -1,9 +1,12 @@
 package com.tu.mall.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.tu.mall.common.exception.CustomException;
+import com.tu.mall.common.result.ResultCodeEnum;
 import com.tu.mall.entity.Category1;
 import com.tu.mall.entity.Category2;
 import com.tu.mall.entity.Category3;
@@ -15,7 +18,7 @@ import com.tu.mall.mapper.view.CategoryViewMapper;
 import com.tu.mall.service.ICategoryService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
-import springfox.documentation.swagger.web.InMemorySwaggerResourcesProvider;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +40,6 @@ public class CategoryServiceImpl implements ICategoryService {
     private Category2Mapper category2Mapper;
     @Autowired
     private Category3Mapper category3Mapper;
-    @Autowired
-    private InMemorySwaggerResourcesProvider inMemorySwaggerResourcesProvider;
 
     @Override
     public List<JSONObject> getList() {
@@ -55,7 +56,9 @@ public class CategoryServiceImpl implements ICategoryService {
             List<JSONObject> jsonObjectList1 = new ArrayList<>();
             List<CategoryView> categoryViewList1 = next1.getValue(); // 这个categoryViewList1的所有category1Id均相同
             Map<Long, List<CategoryView>> categoryMap2 = // 键：category2Id，值：每个categoryViewList1（按组分）
-                    categoryViewList1.stream().collect(Collectors.groupingBy(CategoryView::getCategory2Id));
+                    categoryViewList1.stream()
+                            .filter(categoryView -> categoryView.getCategory2Id() != null) // 过滤null值
+                            .collect(Collectors.groupingBy(CategoryView::getCategory2Id));
             for (Map.Entry<Long, List<CategoryView>> next2 : categoryMap2.entrySet()) {
                 JSONObject jsonObject2 = JSONUtil.createObj();
                 jsonObject2.set("category2Id", next2.getKey());
@@ -63,7 +66,9 @@ public class CategoryServiceImpl implements ICategoryService {
                 List<JSONObject> jsonObjectList2 = new ArrayList<>();
                 List<CategoryView> categoryViewList2 = next2.getValue(); // 这个categoryViewList2的所有category2Id均相同
                 Map<Long, List<CategoryView>> categoryMap3 = // 键：category3Id，值：每个categoryViewList2（按组分）
-                        categoryViewList2.stream().collect(Collectors.groupingBy(CategoryView::getCategory3Id));
+                        categoryViewList2.stream()
+                                .filter(categoryView -> categoryView.getCategory3Id() != null) // 过滤null值
+                                .collect(Collectors.groupingBy(CategoryView::getCategory3Id));
                 for (Map.Entry<Long, List<CategoryView>> next3 : categoryMap3.entrySet()) {
                     JSONObject jsonObject3 = JSONUtil.createObj();
                     jsonObject3.set("category3Id", next3.getKey());
@@ -80,32 +85,35 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
+    @Transactional
     public void setCategory(CategoryView categoryView) {
         Category1 category1 = new Category1()
                 .setId(categoryView.getCategory1Id())
                 .setName(categoryView.getCategory1Name());
         Category2 category2 = new Category2()
                 .setId(categoryView.getCategory2Id())
-                .setName(categoryView.getCategory2Name())
-                .setCategory1Id(categoryView.getCategory1Id());
+                .setName(categoryView.getCategory2Name());
         Category3 category3 = new Category3()
                 .setId(categoryView.getCategory3Id())
-                .setName(categoryView.getCategory3Name())
-                .setCategory2Id(categoryView.getCategory2Id());
+                .setName(categoryView.getCategory3Name());
 
-        // 新增分类
-        if (ObjectUtil.isNotNull(category3.getCategory2Id())) { // 三新增
-            category3Mapper.insertOrUpdate(category3);
-        } else if (ObjectUtil.isNotNull(category2.getCategory1Id())) { // 二三新增
-            category2Mapper.insert(category2);
-            category3.setCategory2Id(category2.getId());
-            category3Mapper.insert(category3);
-        } else { // 一二三新增
-            category1Mapper.insert(category1);
+        if (ObjectUtil.isNotNull(category1.getName())
+                && ObjectUtil.isNotNull(category2.getName())
+                && ObjectUtil.isNotNull(category3.getName())) { // 给了一二三级分类信息
+            category1Mapper.insertOrUpdate(category1);
             category2.setCategory1Id(category1.getId());
-            category2Mapper.insert(category2);
+            category2Mapper.insertOrUpdate(category2);
             category3.setCategory2Id(category2.getId());
-            category3Mapper.insert(category3);
+            category3Mapper.insertOrUpdate(category3);
+        } else if (ObjectUtil.isNotNull(category1.getName())
+                && ObjectUtil.isNotNull(category2.getName())) { // 给了一二级分类信息
+            category1Mapper.insertOrUpdate(category1);
+            category2.setCategory1Id(category1.getId());
+            category2Mapper.insertOrUpdate(category2);
+        } else if (ObjectUtil.isNotNull(category1.getName())) { // 只给了一级分了信息
+            category1Mapper.insertOrUpdate(category1);
+        } else {
+            throw new CustomException(ResultCodeEnum.CATEGORY_FAIL);
         }
     }
 
