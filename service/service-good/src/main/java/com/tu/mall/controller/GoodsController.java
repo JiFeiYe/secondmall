@@ -35,7 +35,7 @@ public class GoodsController {
      * @return {@code Result<String>}
      */
     @PostMapping
-    public Result<String> saveGoods(HttpServletRequest request, /*@RequestBody*/ SkuInfo skuInfo) {
+    public Result<String> saveGoods(HttpServletRequest request, @RequestBody SkuInfo skuInfo) {
         log.info("保存商品进mysql，skuInfo：{}", skuInfo);
 
         String userId = AuthContextHolder.getUserId(request);
@@ -70,7 +70,7 @@ public class GoodsController {
      * @return {@code Result<String>}
      */
     @PutMapping
-    public Result<String> updateGoods(HttpServletRequest request, /*@RequestBody*/ SkuInfo skuInfo) {
+    public Result<String> updateGoods(HttpServletRequest request, @RequestBody SkuInfo skuInfo) {
         log.info("更新商品信息mysql，skuInfo：{}", skuInfo);
 
         String userId = AuthContextHolder.getUserId(request);
