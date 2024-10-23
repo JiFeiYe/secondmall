@@ -47,7 +47,9 @@ public class CategoryServiceImpl implements ICategoryService {
         List<JSONObject> jsonObjectList = new ArrayList<>();
         // 先按category1Id分组
         Map<Long, List<CategoryView>> categoryMap1 = // 键：category1Id，值：每个categoryViewList（按组分）
-                categoryViewList.stream().collect(Collectors.groupingBy(CategoryView::getCategory1Id));
+                categoryViewList.stream()
+                        .filter(categoryView -> categoryView.getCategory1Id() != null) // 过滤null值
+                        .collect(Collectors.groupingBy(CategoryView::getCategory1Id));
         for (Map.Entry<Long, List<CategoryView>> next1 : categoryMap1.entrySet()) {
             JSONObject jsonObject1 = JSONUtil.createObj();
             jsonObject1.set("category1Id", next1.getKey());
@@ -136,18 +138,22 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
+    @Transactional
     public void delCategory(CategoryView categoryView) {
         Long category1Id = categoryView.getCategory1Id();
         Long category2Id = categoryView.getCategory2Id();
         Long category3Id = categoryView.getCategory3Id();
-        if (ObjectUtil.isNotNull(category3Id)) {
+        if (ObjectUtil.isNotNull(category1Id)
+                && ObjectUtil.isNotNull(category2Id)
+                && ObjectUtil.isNotNull(category3Id)) {
             category3Mapper.deleteById(category3Id);
-        } else if (ObjectUtil.isNotNull(category2Id)) {
+        } else if (ObjectUtil.isNotNull(category1Id)
+                && ObjectUtil.isNotNull(category2Id)) {
             category2Mapper.deleteById(category2Id);
             LambdaQueryWrapper<Category3> lqw = new LambdaQueryWrapper<>();
             lqw.eq(Category3::getCategory2Id, category2Id);
             category3Mapper.delete(lqw);
-        } else {
+        } else if (ObjectUtil.isNotNull(category1Id)) {
             category1Mapper.deleteById(category1Id);
             LambdaQueryWrapper<Category2> lqw1 = new LambdaQueryWrapper<>();
             lqw1.eq(Category2::getCategory1Id, category1Id);
@@ -155,6 +161,8 @@ public class CategoryServiceImpl implements ICategoryService {
             LambdaQueryWrapper<Category3> lqw2 = new LambdaQueryWrapper<>();
             lqw2.eq(Category3::getCategory2Id, category2Id);
             category3Mapper.delete(lqw2);
+        } else {
+            throw new CustomException(ResultCodeEnum.CATEGORY_FAIL);
         }
     }
 }
