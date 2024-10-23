@@ -20,6 +20,7 @@ public enum ResultCodeEnum {
     ATTRIBUTE_FAIL(4007, "属性参数错误"),
 
     EMAIL_FAIL(5001, "邮件发送失败"),
+    // 5002 IOException,
     ;
 
     private final Integer code;

@@ -2,20 +2,40 @@ package com.tu.mall.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.tu.mall.api.SearchService;
+import com.tu.mall.common.exception.CustomException;
 import com.tu.mall.entity.*;
 import com.tu.mall.entity.es.Good;
 import com.tu.mall.entity.es.SearchAttr;
+import com.tu.mall.entity.es.SearchParam;
+import com.tu.mall.entity.es.SearchResponseVo;
 import com.tu.mall.entity.view.CategoryView;
 import com.tu.mall.mapper.AttributeMapper;
 import com.tu.mall.mapper.AttributeValueMapper;
 import com.tu.mall.mapper.view.CategoryViewMapper;
 import com.tu.mall.repository.GoodRepository;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.apache.lucene.search.join.ScoreMode;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.Operator;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -36,6 +56,8 @@ public class SearchServiceImpl implements SearchService {
 
     @Autowired
     private GoodRepository goodRepository;
+    @Autowired
+    private RestHighLevelClient restHighLevelClient;
 
     @Override
     public void upperGoods(SkuInfo skuInfo) {
@@ -97,5 +119,110 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public void lowerGoods(Long goodId) {
         goodRepository.deleteById(goodId);
+    }
+
+    @Override
+    public SearchResponseVo search(SearchParam searchParam) {
+        SearchRequest request = this.buildDsl(searchParam);
+        SearchResponse response;
+        try {
+            response = restHighLevelClient.search(request, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            throw new CustomException(e.getMessage(), 5002);
+        }
+        SearchResponseVo vo = this.parseResponse(response);
+        vo.setPage(searchParam.getPage());
+        vo.setSize(searchParam.getSize());
+        vo.setTotalPages(
+                vo.getTotal() % searchParam.getSize() == 0 ?
+                        vo.getTotal() / searchParam.getSize() :
+                        vo.getTotal() / searchParam.getSize() + 1
+        );
+        return vo;
+    }
+
+    private SearchRequest buildDsl(SearchParam searchParam) {
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+
+        // 一二三级分类
+        if (ObjectUtil.isNotNull(searchParam.getCategory1Id())) {
+            boolQueryBuilder.filter(QueryBuilders.termQuery("category1Id", searchParam.getCategory1Id()));
+        }
+        if (ObjectUtil.isNotNull(searchParam.getCategory2Id())) {
+            boolQueryBuilder.filter(QueryBuilders.termQuery("category2Id", searchParam.getCategory2Id()));
+        }
+        if (ObjectUtil.isNotNull(searchParam.getCategory3Id())) {
+            boolQueryBuilder.filter(QueryBuilders.termQuery("category3Id", searchParam.getCategory3Id()));
+        }
+
+        // 属性 {"运行内存,8GB", "屏幕尺寸,7英寸", ...}
+        String[] attrs = searchParam.getAttrs();
+        if (ObjectUtil.isNotNull(attrs) && ArrayUtil.isNotEmpty(attrs)) {
+            for (String attr : attrs) {
+                List<String> split = StrUtil.split(attr, ":");
+                BoolQueryBuilder innerQueryBuilder = QueryBuilders.boolQuery();
+                innerQueryBuilder.must(QueryBuilders.matchQuery("attrName", split.get(0)));
+                innerQueryBuilder.must(QueryBuilders.matchQuery("attrValueName", split.get(1)));
+                boolQueryBuilder.filter(
+                        QueryBuilders.boolQuery().must(
+                                QueryBuilders.nestedQuery("attrList", innerQueryBuilder, ScoreMode.None)
+                        )
+                );
+            }
+        }
+
+        // 关键字
+        String keyText = searchParam.getKeyText();
+        if (StrUtil.isNotEmpty(keyText)) {
+            boolQueryBuilder.must(QueryBuilders.matchQuery("", keyText).operator(Operator.OR));
+        }
+
+        searchSourceBuilder.query(boolQueryBuilder);
+
+        // 分页
+        Integer page = searchParam.getPage();
+        Integer size = searchParam.getSize();
+        searchSourceBuilder.from((page - 1) * size).size(size);
+
+        // 排序规则
+        String order = searchParam.getOrder();
+        if (StrUtil.isNotEmpty(order)) {
+            List<String> split = StrUtil.split(order, ":");
+            searchSourceBuilder.sort(
+                    split.get(0),
+                    StrUtil.equals("asc", split.get(1)) ? SortOrder.ASC : SortOrder.DESC
+            );
+        }
+        searchSourceBuilder.sort("_score", SortOrder.DESC);
+
+        // 实施查询
+        SearchRequest searchRequest = new SearchRequest("good");
+        searchRequest.source(searchSourceBuilder);
+        System.out.println("dsl:\n" + searchSourceBuilder);
+
+        // 选择、排除字段
+//        searchSourceBuilder.fetchSource(new String[]{"id", "defaultImg", "title", "price", "createTime"}, null);
+
+        return searchRequest;
+    }
+
+    private SearchResponseVo parseResponse(SearchResponse response) {
+        SearchResponseVo vo = new SearchResponseVo();
+        SearchHits hits = response.getHits();
+        // 总记录数
+        vo.setTotal(hits.getTotalHits().value);
+        // 商品数据
+        SearchHit[] h = hits.getHits();
+        List<Good> goodList = new ArrayList<>();
+        if (ArrayUtil.isNotEmpty(h)) {
+            for (SearchHit hit : h) {
+                String sourceString = hit.getSourceAsString();
+                Good good = JSONUtil.toBean(sourceString, Good.class);
+                goodList.add(good);
+            }
+        }
+        vo.setGoodList(goodList);
+        return vo;
     }
 }

@@ -41,7 +41,7 @@ public class GoodsController {
         String userId = AuthContextHolder.getUserId(request);
         skuInfo.setUserId(Long.valueOf(userId));
         SkuInfo skuInfo1 = skuInfoService.saveGoods(skuInfo); // 填充skuInfo.skuImgList返回
-        // todo 调用es上架方法
+        // 调用es上架方法
         skuInfo1.setImgFileList(null);
         searchService.upperGoods(skuInfo1);
         return Result.ok();
@@ -75,7 +75,7 @@ public class GoodsController {
 
         String userId = AuthContextHolder.getUserId(request);
         skuInfoService.updateGoods(userId, skuInfo);
-        // todo 调用es商品更新方法（下架后重新上架）
+        // 调用es商品更新方法（下架后重新上架）
         skuInfo.setImgFileList(null);
         searchService.lowerGoods(skuInfo.getId());
         searchService.upperGoods(skuInfo);
@@ -92,7 +92,7 @@ public class GoodsController {
     public Result<String> delGoods(Long skuId) {
         log.info("删除商品，skuId：{}", skuId);
 
-        // todo 调用es下架商品方法
+        // 调用es下架商品方法
         searchService.lowerGoods(skuId);
         skuInfoService.delGoods(skuId);
         return Result.ok();

@@ -52,21 +52,21 @@ public class Good {
     /**
      * 一级分类
      */
-    @Field(type = FieldType.Long, index = false)
+    @Field(type = FieldType.Long)
     private Long category1Id;
     @Field(type = FieldType.Keyword)
     private String category1Name;
     /**
      * 二级分类
      */
-    @Field(type = FieldType.Long, index = false)
+    @Field(type = FieldType.Long)
     private Long category2Id;
     @Field(type = FieldType.Keyword)
     private String category2Name;
     /**
      * 三级分类
      */
-    @Field(type = FieldType.Long, index = false)
+    @Field(type = FieldType.Long)
     private Long category3Id;
     @Field(type = FieldType.Keyword)
     private String category3Name;

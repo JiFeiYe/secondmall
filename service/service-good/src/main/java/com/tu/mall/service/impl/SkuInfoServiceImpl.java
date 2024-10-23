@@ -43,7 +43,7 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
     public SkuInfo saveGoods(SkuInfo skuInfo) {
         // 保存skuInfo
         {
-            skuInfo.setStatus(0); // 尚未上架es
+            skuInfo.setStatus(1); // 尚未上架es
             skuInfoMapper.insert(skuInfo);
         }
 
@@ -84,6 +84,30 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
         LambdaQueryWrapper<SkuInfo> lqw = new LambdaQueryWrapper<>();
         lqw.eq(SkuInfo::getUserId, userId);
         skuInfopage = skuInfoMapper.selectPage(skuInfopage, lqw);
+        List<SkuInfo> skuInfoList = new ArrayList<>();
+        for (SkuInfo skuInfo : skuInfopage.getRecords()) {
+            // 补充图片信息
+            Long skuId = skuInfo.getId();
+            LambdaQueryWrapper<SkuImg> lqw1 = new LambdaQueryWrapper<>();
+            lqw1.eq(SkuImg::getSkuId, skuId);
+            List<SkuImg> skuImgList = skuImgMapper.selectList(lqw1);
+            skuInfo.setSkuImgList(skuImgList);
+            // 补充属性信息
+            LambdaQueryWrapper<SkuAttributeValue> lqw2 = new LambdaQueryWrapper<>();
+            lqw2.eq(SkuAttributeValue::getSkuId, skuId);
+            List<SkuAttributeValue> skuAttributeValueList = skuAttributeValueMapper.selectList(lqw2);
+            skuInfo.setSkuAttributeValueList(skuAttributeValueList);
+
+            skuInfoList.add(skuInfo);
+        }
+        skuInfopage.setRecords(skuInfoList);
+        return skuInfopage;
+    }
+
+    @Override
+    public Page<SkuInfo> getGoods(Integer page, Integer size) {
+        Page<SkuInfo> skuInfopage = new Page<>(page, size);
+        skuInfopage = skuInfoMapper.selectPage(skuInfopage, null);
         List<SkuInfo> skuInfoList = new ArrayList<>();
         for (SkuInfo skuInfo : skuInfopage.getRecords()) {
             // 补充图片信息
@@ -150,7 +174,7 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
                         .notIn(SkuImg::getId, ids);
                 skuImgMapper.delete(lqw);
             }
-            LambdaQueryWrapper<SkuImg> lqw= new LambdaQueryWrapper<>();
+            LambdaQueryWrapper<SkuImg> lqw = new LambdaQueryWrapper<>();
             lqw.eq(SkuImg::getSkuId, skuInfo.getId());
             skuInfo.setSkuImgList(skuImgMapper.selectList(lqw));
         }

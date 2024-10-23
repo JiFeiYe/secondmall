@@ -3,6 +3,8 @@ package com.tu.mall.controller;
 import com.tu.mall.api.SearchService;
 import com.tu.mall.common.result.Result;
 import com.tu.mall.entity.SkuInfo;
+import com.tu.mall.entity.es.SearchParam;
+import com.tu.mall.entity.es.SearchResponseVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +33,7 @@ public class SearchController {
      * @return {@code Result<String>}
      */
     @PostMapping("/upper")
-    public Result<String> upperGoods(@RequestBody SkuInfo skuInfo) {
+    public Result<String> upperGoods(/*@RequestBody*/ SkuInfo skuInfo) {
         log.info("开始上架商品， skuInfo：{}", skuInfo);
 
         searchService.upperGoods(skuInfo);
@@ -53,12 +55,16 @@ public class SearchController {
     }
 
     /**
-     * todo 搜索
+     * 搜索
      *
-     * @return {@code Result<String>}
+     * @param searchParam 搜索参数
+     * @return {@code Result<SearchResponse>}
      */
     @PostMapping
-    public Result<String> search() {
-        return Result.ok();
+    public Result<SearchResponseVo> search(/*@RequestBody*/ SearchParam searchParam) {
+        log.info("搜索商品，searchParam：{}", searchParam);
+
+       SearchResponseVo searchResponseVo = searchService.search(searchParam);
+       return Result.ok(searchResponseVo);
     }
 }

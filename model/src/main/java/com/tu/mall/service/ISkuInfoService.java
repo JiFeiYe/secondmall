@@ -17,6 +17,8 @@ public interface ISkuInfoService {
 
     Page<SkuInfo> getGoods(String userId, Integer page, Integer size);
 
+    Page<SkuInfo> getGoods(Integer page, Integer size);
+
     void updateGoods(String userId, SkuInfo skuInfo);
 
     void delGoods(Long skuId);

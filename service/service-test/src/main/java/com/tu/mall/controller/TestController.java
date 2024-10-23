@@ -1,13 +1,11 @@
 package com.tu.mall.controller;
 
 import com.tu.mall.api.MyApi;
-import com.tu.mall.api.MyApi2;
 import com.tu.mall.common.result.Result;
 import com.tu.mall.common.utils.MailService;
 import com.tu.mall.entity.UserInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,8 +29,8 @@ public class TestController {
     @Autowired
     private MyApi myApi;
 
-    @DubboReference
-    private MyApi2 myApi2;
+//    @DubboReference
+//    private MyApi2 myApi2;
 
     @ApiOperation(value = "邮件接口", notes = "这里是邮件接口的详细描述")
     @PostMapping("/mail")
@@ -49,8 +47,8 @@ public class TestController {
     @ApiOperation(value = "测试接口", notes = "这里是测试接口的详细描述")
     @GetMapping("/user")
     public Result<List<UserInfo>> getUserInfoList() {
-        String string = myApi2.testReference("abc,def");
-        System.out.println(string);
+//        String string = myApi2.testReference("abc,def");
+//        System.out.println(string);
 
         List<UserInfo> userInfos = myApi.getUserInfoList();
         System.out.println(userInfos.get(0));

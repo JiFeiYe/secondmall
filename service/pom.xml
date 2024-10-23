@@ -14,10 +14,10 @@
     <modules>
         <module>service-user</module>
         <module>service-test</module>
-        <module>service-test2</module>
         <module>service-good</module>
         <module>service-search</module>
         <module>service-admin</module>
+        <module>service-review</module>
     </modules>
 
     <properties>

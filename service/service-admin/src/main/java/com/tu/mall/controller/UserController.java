@@ -18,7 +18,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/back/admin")
 @Slf4j
-public class AdminController {
+public class UserController {
 
     @DubboReference
     private IUserInfoService userInfoService;
