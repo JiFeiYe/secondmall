@@ -77,7 +77,7 @@ public class TestTransaction {
         });
         CompletableFuture<Void> c3 = CompletableFuture.runAsync(() -> {
             System.out.println("cc");
-            AttributeValue attributeValue = new AttributeValue().setValue("cs1");
+            AttributeValue attributeValue = new AttributeValue().setName("cs1");
             attributeValueMapper.insert(attributeValue);
 //            int a = 1 / 0;
         }, poolExecutor).exceptionally(ex -> {

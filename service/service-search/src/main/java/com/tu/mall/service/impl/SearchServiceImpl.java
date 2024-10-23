@@ -76,7 +76,7 @@ public class SearchServiceImpl implements SearchService {
                 if (ObjectUtil.isNull(attributeValue))
                     return;
                 searchAttr.setAttrValueName(
-                        attributeValue.getValue()
+                        attributeValue.getName()
                 );
                 searchAttrList.add(searchAttr);
                 category3Id.compareAndSet(0, attribute.getCategoryId()); // 就第一次就行了，后面都跳过

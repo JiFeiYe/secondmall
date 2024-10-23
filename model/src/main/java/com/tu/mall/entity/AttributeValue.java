@@ -33,7 +33,7 @@ public class AttributeValue implements Serializable {
     /**
      * 属性值
      */
-    private String value;
+    private String name;
 
     /**
      * 属性id
