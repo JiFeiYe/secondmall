@@ -26,10 +26,10 @@ spring:
         - id: service-review-route
           uri: lb://service-review
           predicates:
-            - Path:/front/review
+            - Path=/front/review/**
           filters:
             - StripPrefix=2
-        - id: service-search-route # todo 上线时删除该路由
+        - id: service-search-route
           uri: lb://service-search
           predicates:
             - Path=/front/search/**
