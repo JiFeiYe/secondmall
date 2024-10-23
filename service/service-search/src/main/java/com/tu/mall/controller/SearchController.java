@@ -33,7 +33,7 @@ public class SearchController {
      * @return {@code Result<String>}
      */
     @PostMapping("/upper")
-    public Result<String> upperGoods(/*@RequestBody*/ SkuInfo skuInfo) {
+    public Result<String> upperGoods(@RequestBody SkuInfo skuInfo) {
         log.info("开始上架商品， skuInfo：{}", skuInfo);
 
         searchService.upperGoods(skuInfo);
@@ -61,7 +61,7 @@ public class SearchController {
      * @return {@code Result<SearchResponse>}
      */
     @PostMapping
-    public Result<SearchResponseVo> search(/*@RequestBody*/ SearchParam searchParam) {
+    public Result<SearchResponseVo> search(@RequestBody SearchParam searchParam) {
         log.info("搜索商品，searchParam：{}", searchParam);
 
        SearchResponseVo searchResponseVo = searchService.search(searchParam);

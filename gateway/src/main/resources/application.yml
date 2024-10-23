@@ -17,16 +17,16 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes: # 管理员服务不参与网关调控，只在内网使用
-        - id: service-user-route
-          uri: lb://service-user
-          predicates:
-            - Path=/front/user/**
-          filters:
-            - StripPrefix=2
         - id: service-good-route
           uri: lb://service-good
           predicates:
             - Path=/front/goods/**
+          filters:
+            - StripPrefix=2
+        - id: service-review-route
+          uri: lb://service-review
+          predicates:
+            - Path:/front/review
           filters:
             - StripPrefix=2
         - id: service-search-route # todo 上线时删除该路由
@@ -35,16 +35,16 @@ spring:
             - Path=/front/search/**
           filters:
             - StripPrefix=2
+        - id: service-user-route
+          uri: lb://service-user
+          predicates:
+            - Path=/front/user/**
+          filters:
+            - StripPrefix=2
         - id: service-test-route
           uri: lb://test
           predicates:
             - Path=/test/**
-          filters:
-            - StripPrefix=1
-        - id: service-test2-route
-          uri: lb://test2
-          predicates:
-            - Path=/test2/**
           filters:
             - StripPrefix=1
 freeUrls:
