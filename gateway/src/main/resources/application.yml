@@ -49,3 +49,5 @@ spring:
             - StripPrefix=1
 freeUrls:
   url: v2,/login,/register/code
+blockUrls:
+  url: /upper,/lower

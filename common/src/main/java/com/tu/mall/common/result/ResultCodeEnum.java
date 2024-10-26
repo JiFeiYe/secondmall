@@ -11,6 +11,7 @@ public enum ResultCodeEnum {
     SUCCESS(200, "success"),
     FAIL(400, "fail"),
 
+    FORBIDDEN(4000, "禁止访问"),
     LOGIN_AUTH(4001, "尚未登录"),
     LOGIN_FAIL(4002, "登录失败"),
     CODE_FAIL(4003, "验证码无效"),

@@ -33,6 +33,9 @@ public class AuthGlobalFilter implements GlobalFilter {
     @Value("${freeUrls.url}")
     private String freeUrls;
 
+    @Value("${blockUrls.url}")
+    private String blockUrls;
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         // 获取请求对象
@@ -46,6 +49,12 @@ public class AuthGlobalFilter implements GlobalFilter {
             if (StrUtil.indexOf(url, freeUrl, 0, false) != -1) { // 包含
                 System.out.println(url + "是免权限路径，通过。");
                 return chain.filter(exchange);
+            }
+        }
+        for (String blockUrl : StrUtil.split(blockUrls, ",")) {
+            if (StrUtil.indexOf(url, blockUrl, 0, false) != -1) { // 包含
+                System.out.println(url + "是禁止访问路径，拒绝。");
+                return out(exchange.getResponse(), ResultCodeEnum.FORBIDDEN);
             }
         }
 
