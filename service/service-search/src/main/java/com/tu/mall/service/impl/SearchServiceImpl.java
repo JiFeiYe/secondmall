@@ -175,7 +175,8 @@ public class SearchServiceImpl implements SearchService {
         // 关键字
         String keyText = searchParam.getKeyText();
         if (StrUtil.isNotEmpty(keyText)) {
-            boolQueryBuilder.must(QueryBuilders.matchQuery("", keyText).operator(Operator.OR));
+            boolQueryBuilder.should(QueryBuilders.matchQuery("title", keyText).operator(Operator.OR));
+            boolQueryBuilder.should(QueryBuilders.matchQuery("description", keyText).operator(Operator.OR));
         }
 
         searchSourceBuilder.query(boolQueryBuilder);
@@ -186,14 +187,24 @@ public class SearchServiceImpl implements SearchService {
         searchSourceBuilder.from((page - 1) * size).size(size);
 
         // 排序规则
-        String order = searchParam.getOrder();
-        if (StrUtil.isNotEmpty(order)) {
-            List<String> split = StrUtil.split(order, ":");
-            searchSourceBuilder.sort(
-                    split.get(0),
-                    StrUtil.equals("asc", split.get(1)) ? SortOrder.ASC : SortOrder.DESC
-            );
+        String[] orders = searchParam.getOrders();
+        if (ArrayUtil.isNotEmpty(orders)) {
+            for (String order : orders) {
+                List<String> split = StrUtil.split(order, ":");
+                if (StrUtil.equals(split.get(0), "price")) {
+                    searchSourceBuilder.sort(
+                            split.get(0),
+                            StrUtil.equals("asc", split.get(1)) ? SortOrder.ASC : SortOrder.DESC
+                    );
+                } else if (StrUtil.equals(split.get(0), "createTime")) {
+                    searchSourceBuilder.sort(
+                            split.get(0),
+                            StrUtil.equals("asc", split.get(1)) ? SortOrder.ASC : SortOrder.DESC
+                    );
+                }
+            }
         }
+        searchSourceBuilder.sort("createTime", SortOrder.DESC);
         searchSourceBuilder.sort("_score", SortOrder.DESC);
 
         // 实施查询
