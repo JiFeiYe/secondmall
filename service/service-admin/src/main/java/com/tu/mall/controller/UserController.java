@@ -5,6 +5,8 @@ import com.tu.mall.common.result.Result;
 import com.tu.mall.common.result.ResultCodeEnum;
 import com.tu.mall.entity.UserInfo;
 import com.tu.mall.service.IUserInfoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,7 @@ import java.util.Map;
  * @author JiFeiYe
  * @since 2024/10/18
  */
+@Api(tags = {"UserController"})
 @RestController
 @RequestMapping("/back/admin")
 @Slf4j
@@ -30,6 +33,7 @@ public class UserController {
      * @param password 密码
      * @return {@code Result<Map<String, String>>}
      */
+    @ApiOperation("管理员登录")
     @PostMapping("/login")
     public Result<Map<String, String>> login(String account, String password) {
         log.info("开始登录，account：{}，password：{}", account, password);
@@ -47,6 +51,7 @@ public class UserController {
      * @param size 页面大小
      * @return {@code Result<Page<UserInfo>>}
      */
+    @ApiOperation("分页查询所有用户or管理员列表")
     @GetMapping("/user")
     public Result<Page<UserInfo>> getUserInfoByPage(Integer page, Integer size, Integer identity) {
         log.info("获取用户信息列表，page：{}，size：{}", page, size);
@@ -60,6 +65,7 @@ public class UserController {
      * @param userInfo 用户信息
      * @return {@code Result<String>}
      */
+    @ApiOperation("修改用户or管理员信息")
     @PutMapping("/user")
     public Result<String> updateUserInfo(@RequestBody UserInfo userInfo) {
         log.info("修改用户/管理员信息，useInfo：{}", userInfo);

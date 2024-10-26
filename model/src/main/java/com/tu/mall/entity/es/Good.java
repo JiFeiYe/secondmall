@@ -1,5 +1,7 @@
 package com.tu.mall.entity.es;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -11,73 +13,88 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * es索引库mapping
+ * EsIndexMapping
  *
  * @author JiFeiYe
  * @since 2024/10/17
  */
+@ApiModel(description = "EsIndexMapping")
 @Data
 @Document(indexName = "good")
 public class Good {
     /**
      * 商品雪花id
      */
+    @ApiModelProperty("商品雪花id")
     @Id
     private Long id;
     /**
      * 用户id
      */
+    @ApiModelProperty("用户id")
     @Field(type = FieldType.Long, index = false)
     private Integer userId;
     /**
      * 商品标题
      */
+    @ApiModelProperty("商品标题")
     @Field(type = FieldType.Text, analyzer = "ik_max_word")
     private String title;
     /**
      * 商品描述
      */
+    @ApiModelProperty("商品描述")
     @Field(type = FieldType.Text, analyzer = "ik_max_word")
     private String description;
     /**
      * 价格
      */
-    @Field(type = FieldType.Double, index = false)
+    @ApiModelProperty("价格")
+    @Field(type = FieldType.Double)
     private BigDecimal price;
     /**
      * 上架时间
      */
+    @ApiModelProperty("上架时间")
     @Field(type = FieldType.Date, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
     /**
      * 一级分类
      */
+    @ApiModelProperty("一级分类")
     @Field(type = FieldType.Long)
     private Long category1Id;
+    @ApiModelProperty("")
     @Field(type = FieldType.Keyword)
     private String category1Name;
     /**
      * 二级分类
      */
+    @ApiModelProperty("二级分类")
     @Field(type = FieldType.Long)
     private Long category2Id;
+    @ApiModelProperty("")
     @Field(type = FieldType.Keyword)
     private String category2Name;
     /**
      * 三级分类
      */
+    @ApiModelProperty("三级分类")
     @Field(type = FieldType.Long)
     private Long category3Id;
+    @ApiModelProperty("")
     @Field(type = FieldType.Keyword)
     private String category3Name;
     /**
      * 图片地址
      */
+    @ApiModelProperty("图片地址")
     @Field(type = FieldType.Keyword, index = false)
     private List<String> imgUrlList;
     /**
-     * 基本/销售属性
+     * 属性
      */
+    @ApiModelProperty("属性")
     @Field(type = FieldType.Nested)
     private List<SearchAttr> attrList;
 }

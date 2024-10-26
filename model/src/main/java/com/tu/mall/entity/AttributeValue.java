@@ -1,6 +1,8 @@
 package com.tu.mall.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
  * @author JiFeiYe
  * @since 2024-10-10
  */
+@ApiModel(description = "商品（基本/销售）属性值表")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
@@ -27,25 +30,31 @@ public class AttributeValue implements Serializable {
     /**
      * 雪花id
      */
+    @ApiModelProperty("雪花id")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
      * 属性值
      */
+    @ApiModelProperty("属性值")
     private String name;
 
     /**
      * 属性id
      */
+    @ApiModelProperty("属性id")
     private Long attrId;
 
+    @ApiModelProperty("")
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
+    @ApiModelProperty("")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
+    @ApiModelProperty("")
     private Integer isDeleted;
 
 

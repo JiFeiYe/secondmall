@@ -1,6 +1,8 @@
 package com.tu.mall.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
  * @author JiFeiYe
  * @since 2024-10-10
  */
+@ApiModel(description = "图片")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
@@ -27,30 +30,37 @@ public class SkuImg implements Serializable {
     /**
      * 雪花图片id
      */
+    @ApiModelProperty("雪花图片id")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
      * 对应spu的id
      */
+    @ApiModelProperty("对应spu的id")
     private Long skuId;
 
     /**
      * 图片名字（带后缀）
      */
+    @ApiModelProperty("图片名字（带后缀）")
     private String name;
 
     /**
      * 图片地址（阿里云oss）
      */
+    @ApiModelProperty("图片地址（阿里云oss）")
     private String url;
 
+    @ApiModelProperty("")
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
+    @ApiModelProperty("")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
+    @ApiModelProperty("")
     private Integer isDeleted;
 
 

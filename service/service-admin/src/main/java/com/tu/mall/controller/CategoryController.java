@@ -7,6 +7,8 @@ import com.tu.mall.entity.Category2;
 import com.tu.mall.entity.Category3;
 import com.tu.mall.entity.view.CategoryView;
 import com.tu.mall.service.ICategoryService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import java.util.List;
  * @author JiFeiYe
  * @since 2024/10/19
  */
+@Api(tags = {"CategoryController"})
 @RestController
 @RequestMapping("/back/admin")
 @Slf4j
@@ -30,6 +33,7 @@ public class CategoryController {
      *
      * @return {@code Result<List<JSONObject>>}
      */
+    @ApiOperation("获取全部分类信息")
     @GetMapping("/categorylist")
     public Result<List<JSONObject>> getCategoryList() {
         log.info("获取全部分类信息");
@@ -43,6 +47,7 @@ public class CategoryController {
      *
      * @return {@code Result<Category1>}
      */
+    @ApiOperation("获取一级分类")
     @GetMapping("/category1")
     public Result<List<Category1>> getCategory1() {
         log.info("获取一级分类信息");
@@ -57,6 +62,7 @@ public class CategoryController {
      * @param category1Id 一级分类id
      * @return {@code Result<Category2>}
      */
+    @ApiOperation("获取二级分类")
     @GetMapping("/category2")
     public Result<List<Category2>> getCategory2(Long category1Id) {
         log.info("获取二级分类信息，category1Id：{}", category1Id);
@@ -71,6 +77,7 @@ public class CategoryController {
      * @param category2Id 二级分类id
      * @return {@code Result<Category3>}
      */
+    @ApiOperation("获取三级分类")
     @GetMapping("/category3")
     public Result<List<Category3>> getCategory3(Long category2Id) {
         log.info("获取三级分类信息，category2Id：{}", category2Id);
@@ -87,6 +94,7 @@ public class CategoryController {
      * @param categoryView 全部分类视图
      * @return {@code Result<String>}
      */
+    @ApiOperation("新增or修改分类信息")
     @PostMapping("/category")
     public Result<String> setCategory(@RequestBody CategoryView categoryView) {
         log.info("添加or修改分类信息，categoryView：{}",categoryView);
@@ -101,6 +109,7 @@ public class CategoryController {
      * @param categoryView 全部分类视图
      * @return {@code Result<String>}
      */
+    @ApiOperation("删除分类信息")
     @DeleteMapping("/category")
     public Result<String> delCategory(@RequestBody CategoryView categoryView) {
         log.info("删除分类信息，categoryView：{}",categoryView);
