@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 搜索相关接口，此服务不对外
+ * 搜索相关接口
  *
  * @author JiFeiYe
  * @since 2024/10/17
  */
-@Api(tags = {"搜索相关接口，此服务不对外"})
+@Api(tags = {"搜索相关接口"})
 @RestController
 @RequestMapping // "/front/search"被网关截断，免写
 @Slf4j
