@@ -23,6 +23,12 @@ spring:
             - Path=/front/goods/**
           filters:
             - StripPrefix=2
+        - id: service-order-route
+          uri: lb://service-order
+          predicates:
+            - Path=/front/order/**
+          filters:
+            - StripPrefix=2
         - id: service-review-route
           uri: lb://service-review
           predicates:

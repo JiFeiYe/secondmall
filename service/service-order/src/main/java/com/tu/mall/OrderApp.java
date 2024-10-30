@@ -7,13 +7,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * @author JiFeiYe
- * @since 2024/10/23
+ * @since 2024/10/28
  */
 @SpringBootApplication
 @MapperScan({"com.tu.mall.mapper"})
 @EnableDubbo
-public class ReviewApp {
+public class OrderApp {
     public static void main(String[] args) {
-        SpringApplication.run(ReviewApp.class, args);
+        SpringApplication.run(OrderApp.class, args);
     }
 }

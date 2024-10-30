@@ -19,7 +19,11 @@ public interface ISkuInfoService {
 
     Page<SkuInfo> getGoods(Integer page, Integer size);
 
+    SkuInfo getGoods(Long skuId);
+
     void updateGoods(String userId, SkuInfo skuInfo);
 
     void delGoods(Long skuId);
+
+    String getUserId(Long skuId);
 }

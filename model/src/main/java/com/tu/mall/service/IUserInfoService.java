@@ -28,4 +28,6 @@ public interface IUserInfoService {
     Map<String, String> loginAdmin(String account, String password);
 
     Page<UserInfo> getUserInfoByPage(Integer page, Integer size, Integer identity);
+
+    UserInfo getUserInfo(String userId);
 }

@@ -29,6 +29,25 @@ public class OrderInfo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 订单地址（买家）
+     */
+    @ApiModelProperty("订单地址（买家）")
+    @TableField(exist = false)
+    private OrderAddress orderAddress;
+    /**
+     * 订单商品信息id
+     */
+    @ApiModelProperty("订单商品信息id")
+    @TableField(exist = false)
+    private OrderItem orderItem;
+    /**
+     * 订单商品信息
+     */
+    @ApiModelProperty("订单商品信息")
+    @TableField(exist = false)
+    private SkuInfo skuInfo;
+
+    /**
      * 雪花订单id
      */
     @ApiModelProperty("雪花订单id")
@@ -36,10 +55,16 @@ public class OrderInfo implements Serializable {
     private Long id;
 
     /**
-     * 用户id
+     * 买家id
      */
-    @ApiModelProperty("用户id")
-    private Long userId;
+    @ApiModelProperty("买家id")
+    private Long buyerId;
+
+    /**
+     * 卖家id
+     */
+    @ApiModelProperty("卖家id")
+    private Long sellerId;
 
     /**
      * 订单状态（0待付款，1待发货，2已发货，3已完成，4已关闭）
