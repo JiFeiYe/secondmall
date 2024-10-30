@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author JiFeiYe
  * @since 2024/10/15
  */
-@Api(tags = {"UserController"})
+@Api(tags = {"GoodsController"})
 @RestController
 @RequestMapping // “/front/goods”被网关截断，不用写
 @Slf4j

@@ -161,4 +161,9 @@ public class UserInfoServiceImpl implements IUserInfoService {
         return userInfoMapper.selectPage(userInfoPage, lqw);
     }
 
+    @Override
+    public UserInfo getUserInfo(String userId) {
+        return userInfoMapper.selectById(userId);
+    }
+
 }

@@ -18,6 +18,8 @@
         <module>service-search</module>
         <module>service-admin</module>
         <module>service-review</module>
+        <module>service-order</module>
+        <module>service-chat</module>
     </modules>
 
     <properties>

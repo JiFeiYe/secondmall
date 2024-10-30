@@ -91,8 +91,7 @@ public class AttributeServiceImpl implements IAttributeService {
         Long attrValueId = attributeView.getAttrValueId();
         if (ObjectUtil.isNotNull(attrId) && ObjectUtil.isNotNull(attrValueId)) {
             attributeValueMapper.deleteById(attrValueId);
-        }
-        else if (ObjectUtil.isNotNull(attrId)) {
+        } else if (ObjectUtil.isNotNull(attrId)) {
             attributeMapper.deleteById(attrId);
             LambdaQueryWrapper<AttributeValue> lqw = new LambdaQueryWrapper<>();
             lqw.eq(AttributeValue::getAttrId, attrId);

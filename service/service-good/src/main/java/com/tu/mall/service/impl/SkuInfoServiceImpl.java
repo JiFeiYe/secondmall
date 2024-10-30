@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
  * @since 2024/10/17
  */
 @DubboService
+@Transactional
 public class SkuInfoServiceImpl implements ISkuInfoService {
 
     @Autowired
@@ -39,7 +40,6 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
     private SkuAttributeValueMapper skuAttributeValueMapper;
 
     @Override
-    @Transactional
     public SkuInfo saveGoods(SkuInfo skuInfo) {
         // 保存skuInfo
         {
@@ -129,7 +129,26 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
     }
 
     @Override
-    @Transactional
+    public SkuInfo getGoods(Long skuId) {
+        SkuInfo skuInfo = skuInfoMapper.selectById(skuId);
+        {
+            LambdaQueryWrapper<SkuImg> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(SkuImg::getSkuId, skuId);
+            SkuImg skuImg = skuImgMapper.selectOne(lqw);
+            List<SkuImg> skuImgList = new ArrayList<>();
+            skuImgList.add(skuImg);
+            skuInfo.setSkuImgList(skuImgList);
+        }
+        {
+            LambdaQueryWrapper<SkuAttributeValue> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(SkuAttributeValue::getSkuId, skuId);
+            List<SkuAttributeValue> skuAttributeValues = skuAttributeValueMapper.selectList(lqw);
+            skuInfo.setSkuAttributeValueList(skuAttributeValues);
+        }
+        return skuInfo;
+    }
+
+    @Override
     public void updateGoods(String userId, SkuInfo skuInfo) {
         // 更新skuInfo
         {
@@ -203,7 +222,6 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
     }
 
     @Override
-    @Transactional
     public void delGoods(Long skuId) {
         // 删除sku_attribute_value
         {
@@ -227,5 +245,11 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
         {
             skuInfoMapper.deleteById(skuId);
         }
+    }
+
+    @Override
+    public String getUserId(Long skuId) {
+        SkuInfo skuInfo = skuInfoMapper.selectById(skuId);
+        return String.valueOf(skuInfo.getUserId());
     }
 }

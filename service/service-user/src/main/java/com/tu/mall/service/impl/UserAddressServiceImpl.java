@@ -8,6 +8,8 @@ import com.tu.mall.service.IUserAddressService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 /**
  * @author JiFeiYe
  * @since 2024/10/14
@@ -25,6 +27,13 @@ public class UserAddressServiceImpl implements IUserAddressService {
         LambdaQueryWrapper<UserAddress> lqw = new LambdaQueryWrapper<>();
         lqw.eq(UserAddress::getUserId, Long.valueOf(userId));
         return userAddressMapper.selectPage(pages, lqw);
+    }
+
+    @Override
+    public List<UserAddress> getUserAddress(String userId) {
+        LambdaQueryWrapper<UserAddress> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(UserAddress::getUserId, userId);
+        return userAddressMapper.selectList(lqw);
     }
 
     // 新增用户地址

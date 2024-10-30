@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author JiFeiYe
  * @since 2024/10/17
  */
-@Api(tags = {"搜索相关接口"})
+@Api(tags = {"SearchController"})
 @RestController
 @RequestMapping // "/front/search"被网关截断，免写
 @Slf4j
@@ -70,7 +70,7 @@ public class SearchController {
     public Result<SearchResponseVo> search(@RequestBody SearchParam searchParam) {
         log.info("搜索商品，searchParam：{}", searchParam);
 
-       SearchResponseVo searchResponseVo = searchService.search(searchParam);
-       return Result.ok(searchResponseVo);
+        SearchResponseVo searchResponseVo = searchService.search(searchParam);
+        return Result.ok(searchResponseVo);
     }
 }

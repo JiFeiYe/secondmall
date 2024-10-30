@@ -97,7 +97,7 @@ public class CategoryController {
     @ApiOperation("新增or修改分类信息")
     @PostMapping("/category")
     public Result<String> setCategory(@RequestBody CategoryView categoryView) {
-        log.info("添加or修改分类信息，categoryView：{}",categoryView);
+        log.info("添加or修改分类信息，categoryView：{}", categoryView);
 
         categoryService.setCategory(categoryView);
         return Result.ok();
@@ -112,7 +112,7 @@ public class CategoryController {
     @ApiOperation("删除分类信息")
     @DeleteMapping("/category")
     public Result<String> delCategory(@RequestBody CategoryView categoryView) {
-        log.info("删除分类信息，categoryView：{}",categoryView);
+        log.info("删除分类信息，categoryView：{}", categoryView);
 
         categoryService.delCategory(categoryView);
         return Result.ok();
