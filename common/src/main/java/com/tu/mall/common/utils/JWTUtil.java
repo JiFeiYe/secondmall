@@ -19,7 +19,7 @@ public class JWTUtil {
     private static final long EXPIRE = 1000 * 60 * 60 * 24; // 24h
 
     /**
-     * 创建jwt->token
+     * 创建jwt
      *
      * @param userId 用户id
      * @return {@code String}
@@ -33,7 +33,7 @@ public class JWTUtil {
     }
 
     /**
-     * 校验jwt->token
+     * 校验jwt
      * 提取userId
      *
      * @param token token

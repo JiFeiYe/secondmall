@@ -63,6 +63,7 @@ public class Result<T> {
      *
      * @param code    code
      * @param message message
+     * @param <T>     泛型
      * @return {@code Result<T>}
      */
     public static <T> Result<T> exception(Integer code, String message) {

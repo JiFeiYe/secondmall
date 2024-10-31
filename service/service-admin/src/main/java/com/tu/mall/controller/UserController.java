@@ -49,6 +49,7 @@ public class UserController {
      *
      * @param page 当前页面
      * @param size 页面大小
+     * @param identity 身份辨别，0用户，1管理员
      * @return {@code Result<Page<UserInfo>>}
      */
     @ApiOperation("分页查询所有用户or管理员列表")
