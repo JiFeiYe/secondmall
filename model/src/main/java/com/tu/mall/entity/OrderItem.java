@@ -33,31 +33,31 @@ public class OrderItem implements Serializable {
      */
     @ApiModelProperty("雪花id")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;
+    private String id;
 
     /**
      * 订单id
      */
     @ApiModelProperty("订单id")
-    private Long orderId;
+    private String orderId;
 
     /**
      * 商品sku的id
      */
     @ApiModelProperty("商品sku的id")
-    private Long skuId;
+    private String skuId;
 
     /**
      * 商品销售属性id
      */
     @ApiModelProperty("商品销售属性id")
-    private Long attrId;
+    private String attrId;
 
     /**
      * 商品销售属性值id
      */
     @ApiModelProperty("商品销售属性值id")
-    private Long attrValueId;
+    private String attrValueId;
 
     /**
      * 商品销售价格（下单时）

@@ -39,14 +39,14 @@ public class UserAddressServiceImpl implements IUserAddressService {
     // 新增用户地址
     @Override
     public void saveAddress(String userId, UserAddress userAddress) {
-        userAddress.setUserId(Long.valueOf(userId));
+        userAddress.setUserId(userId);
         userAddressMapper.insert(userAddress);
     }
 
     // 更新用户地址
     @Override
     public void updateAddress(String userId, UserAddress userAddress) {
-        userAddress.setUserId(Long.valueOf(userId));
+        userAddress.setUserId(userId);
         userAddressMapper.updateById(userAddress);
     }
 

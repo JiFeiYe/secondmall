@@ -52,19 +52,19 @@ public class OrderInfo implements Serializable {
      */
     @ApiModelProperty("雪花订单id")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;
+    private String id;
 
     /**
      * 买家id
      */
     @ApiModelProperty("买家id")
-    private Long buyerId;
+    private String buyerId;
 
     /**
      * 卖家id
      */
     @ApiModelProperty("卖家id")
-    private Long sellerId;
+    private String sellerId;
 
     /**
      * 订单状态（0待付款，1待发货，2已发货，3已完成，4已关闭）
@@ -82,7 +82,7 @@ public class OrderInfo implements Serializable {
      * 物流单号
      */
     @ApiModelProperty("物流单号")
-    private Long deliveryId;
+    private String deliveryId;
 
     /**
      * 订单总金额

@@ -48,7 +48,7 @@ public class OrderInfoServiceImpl implements IOrderInfoService {
     private OrderItemMapper orderItemMapper;
 
     @Override
-    public Map<String, Object> getBeforeOrder(String userId, Long skuId) {
+    public Map<String, Object> getBeforeOrder(String userId, String skuId) {
         UserInfo userInfo = userInfoService.getUserInfo(userId);
         List<UserAddress> userAddressList = userAddressService.getUserAddress(userId);
         SkuInfo skuInfo = skuInfoService.getGoods(skuId);
@@ -106,7 +106,7 @@ public class OrderInfoServiceImpl implements IOrderInfoService {
             orderAddress.setDeliveryWay("自提");
             orderAddress.setFreight(new BigDecimal(0));
             orderAddressList.add(orderAddress);
-            orderInfo.setSellerId(Long.valueOf(sellerId));
+            orderInfo.setSellerId(sellerId);
         }
         orderAddressMapper.insert(orderAddressList);
 
@@ -147,7 +147,7 @@ public class OrderInfoServiceImpl implements IOrderInfoService {
                 orderInfo.setOrderItem(orderItem);
             }
             {
-                Long skuId = orderInfo.getOrderItem().getSkuId();
+                String skuId = orderInfo.getOrderItem().getSkuId();
                 SkuInfo skuInfo = skuInfoService.getGoods(skuId);
                 orderInfo.setSkuInfo(skuInfo);
             }

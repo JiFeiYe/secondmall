@@ -8,6 +8,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,19 +22,21 @@ import java.util.List;
 @ApiModel(description = "EsIndexMapping")
 @Data
 @Document(indexName = "good")
-public class Good {
+public class Good implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     /**
      * 商品雪花id
      */
     @ApiModelProperty("商品雪花id")
     @Id
-    private Long id;
+    private String id;
     /**
      * 用户id
      */
     @ApiModelProperty("用户id")
-    @Field(type = FieldType.Long, index = false)
-    private Integer userId;
+    @Field(type = FieldType.Text, index = false)
+    private String userId;
     /**
      * 商品标题
      */
@@ -62,8 +65,8 @@ public class Good {
      * 一级分类
      */
     @ApiModelProperty("一级分类")
-    @Field(type = FieldType.Long)
-    private Long category1Id;
+    @Field(type = FieldType.Text)
+    private String category1Id;
     @ApiModelProperty("")
     @Field(type = FieldType.Keyword)
     private String category1Name;
@@ -71,8 +74,8 @@ public class Good {
      * 二级分类
      */
     @ApiModelProperty("二级分类")
-    @Field(type = FieldType.Long)
-    private Long category2Id;
+    @Field(type = FieldType.Text)
+    private String category2Id;
     @ApiModelProperty("")
     @Field(type = FieldType.Keyword)
     private String category2Name;
@@ -80,8 +83,8 @@ public class Good {
      * 三级分类
      */
     @ApiModelProperty("三级分类")
-    @Field(type = FieldType.Long)
-    private Long category3Id;
+    @Field(type = FieldType.Text)
+    private String category3Id;
     @ApiModelProperty("")
     @Field(type = FieldType.Keyword)
     private String category3Name;

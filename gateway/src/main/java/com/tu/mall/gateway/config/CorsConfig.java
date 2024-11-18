@@ -20,7 +20,7 @@ public class CorsConfig {
         corsConfiguration.addAllowedHeader("*");        // 设置请求头
         corsConfiguration.addAllowedMethod("*");        // 设置请求方法
         corsConfiguration.addAllowedOrigin("*");        // 设置请求域名
-        corsConfiguration.setAllowCredentials(true);    // 允许携带cookie
+//        corsConfiguration.setAllowCredentials(true);    // 允许携带cookie
 
         UrlBasedCorsConfigurationSource corsConfigurationSource = new UrlBasedCorsConfigurationSource();
         corsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);

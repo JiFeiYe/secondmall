@@ -32,13 +32,13 @@ public class UserAddress implements Serializable {
      */
     @ApiModelProperty("雪花地址id")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;
+    private String id;
 
     /**
      * 用户id
      */
     @ApiModelProperty("用户id")
-    private Long userId;
+    private String userId;
 
     /**
      * 邮编

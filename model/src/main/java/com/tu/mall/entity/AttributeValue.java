@@ -32,7 +32,7 @@ public class AttributeValue implements Serializable {
      */
     @ApiModelProperty("雪花id")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;
+    private String id;
 
     /**
      * 属性值
@@ -44,7 +44,7 @@ public class AttributeValue implements Serializable {
      * 属性id
      */
     @ApiModelProperty("属性id")
-    private Long attrId;
+    private String attrId;
 
     @ApiModelProperty("")
     @TableField(fill = FieldFill.INSERT)

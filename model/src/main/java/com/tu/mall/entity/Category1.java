@@ -32,7 +32,7 @@ public class Category1 implements Serializable {
      */
     @ApiModelProperty("雪花id")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;
+    private String id;
 
     /**
      * 一级分类名称

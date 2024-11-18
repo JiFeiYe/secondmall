@@ -23,7 +23,7 @@ public class OrderReviewServiceImpl implements IOrderReviewService {
     }
 
     @Override
-    public OrderReview getOrderReview(Long orderId) {
+    public OrderReview getOrderReview(String orderId) {
         LambdaQueryWrapper<OrderReview> lqw = new LambdaQueryWrapper<>();
         lqw.eq(OrderReview::getOrderId, orderId);
         return orderReviewMapper.selectOne(lqw);

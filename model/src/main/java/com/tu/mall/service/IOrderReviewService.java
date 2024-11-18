@@ -14,5 +14,5 @@ public interface IOrderReviewService {
 
     void setOrderReview(OrderReview orderReview);
 
-    OrderReview getOrderReview(Long orderId);
+    OrderReview getOrderReview(String orderId);
 }

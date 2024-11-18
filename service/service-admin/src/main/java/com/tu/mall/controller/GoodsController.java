@@ -65,7 +65,7 @@ public class GoodsController {
      */
     @ApiOperation("商品下架")
     @PostMapping("/goods/lower")
-    public Result<String> lowerGoods(Long skuId) {
+    public Result<String> lowerGoods(String skuId) {
         log.info("商品下架，skuId：{}", skuId);
 
         searchService.lowerGoods(skuId);
@@ -80,7 +80,7 @@ public class GoodsController {
      */
     @ApiOperation("删除商品")
     @DeleteMapping("/goods")
-    public Result<String> delGoods(Long skuId) {
+    public Result<String> delGoods(String skuId) {
         log.info("删除商品，skuId：{}", skuId);
 
         searchService.lowerGoods(skuId);

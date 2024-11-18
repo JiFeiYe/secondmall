@@ -35,6 +35,12 @@
         </dependency>
 
         <dependency>
+            <groupId>cn.org.opendfl</groupId>
+            <artifactId>openim-java-sdk</artifactId>
+            <version>0.7-nospring</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>

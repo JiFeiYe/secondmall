@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  * @since 2024/10/17
  */
 @Repository
-public interface GoodRepository extends ElasticsearchRepository<Good, Long> {
+public interface GoodRepository extends ElasticsearchRepository<Good, String> {
 }

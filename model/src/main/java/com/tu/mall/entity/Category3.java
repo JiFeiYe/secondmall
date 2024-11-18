@@ -32,7 +32,7 @@ public class Category3 implements Serializable {
      */
     @ApiModelProperty("雪花id")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;
+    private String id;
 
     /**
      * 三级分类名称
@@ -44,7 +44,7 @@ public class Category3 implements Serializable {
      * 二级分类id
      */
     @ApiModelProperty("二级分类id")
-    private Long category2Id;
+    private String category2Id;
 
     @ApiModelProperty("")
     @TableField(fill = FieldFill.INSERT)

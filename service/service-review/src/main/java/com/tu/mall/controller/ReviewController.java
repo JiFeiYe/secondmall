@@ -40,7 +40,7 @@ public class ReviewController {
     public Result<String> setOrderReview(HttpServletRequest request, @RequestBody OrderReview orderReview) {
         log.info("设置订单评价，orderReview：{}", orderReview);
 
-        orderReview.setUserId(Long.valueOf(AuthContextHolder.getUserId(request)));
+        orderReview.setUserId(AuthContextHolder.getUserId(request));
         orderReviewService.setOrderReview(orderReview);
         return Result.ok();
     }
@@ -56,7 +56,7 @@ public class ReviewController {
     public Result<String> setAppReview(HttpServletRequest request, @RequestBody AppReview appReview) {
         log.info("设置平台评价，appReview：{}", appReview);
 
-        appReview.setUserId(Long.valueOf(AuthContextHolder.getUserId(request)));
+        appReview.setUserId(AuthContextHolder.getUserId(request));
         appReviewService.setAppReview(appReview);
         return Result.ok();
     }
@@ -69,7 +69,7 @@ public class ReviewController {
      */
     @ApiOperation("获取订单评价")
     @GetMapping("/order")
-    public Result<OrderReview> getOrderReview(Long orderId) {
+    public Result<OrderReview> getOrderReview(String orderId) {
         log.info("获取订单评价");
 
         OrderReview orderReview = orderReviewService.getOrderReview(orderId);

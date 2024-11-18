@@ -64,7 +64,7 @@ public class CategoryController {
      */
     @ApiOperation("获取二级分类")
     @GetMapping("/category2")
-    public Result<List<Category2>> getCategory2(Long category1Id) {
+    public Result<List<Category2>> getCategory2(String category1Id) {
         log.info("获取二级分类信息，category1Id：{}", category1Id);
 
         List<Category2> category2List = categoryService.getCategory2(category1Id);
@@ -79,7 +79,7 @@ public class CategoryController {
      */
     @ApiOperation("获取三级分类")
     @GetMapping("/category3")
-    public Result<List<Category3>> getCategory3(Long category2Id) {
+    public Result<List<Category3>> getCategory3(String category2Id) {
         log.info("获取三级分类信息，category2Id：{}", category2Id);
 
         List<Category3> category3List = categoryService.getCategory3(category2Id);

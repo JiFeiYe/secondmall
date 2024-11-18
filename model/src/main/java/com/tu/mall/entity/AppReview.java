@@ -32,13 +32,13 @@ public class AppReview implements Serializable {
      */
     @ApiModelProperty("雪花id")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;
+    private String id;
 
     /**
      * 用户id（评价者）
      */
     @ApiModelProperty("用户id（评价者）")
-    private Long userId;
+    private String userId;
 
     /**
      * 评分

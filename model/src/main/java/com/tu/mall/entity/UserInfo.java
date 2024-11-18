@@ -32,7 +32,7 @@ public class UserInfo implements Serializable {
      */
     @ApiModelProperty("雪花/UUID？")
     @TableId(value = "user_id", type = IdType.ASSIGN_ID)
-    private Long userId;
+    private String userId;
 
     /**
      * 账号

@@ -70,12 +70,14 @@ public class UserController {
     public Result<Map<String, String>> getRegisterCode(String email) {
         log.info("获取邮箱验证码，email：{}", email);
 
+        if (StrUtil.isEmpty(email))
+            return Result.fail();
         // 验证邮箱未注册
         userInfoService.verifyEmail(email);
         // 生成验证码，发送邮件
         UserInfo userInfo = new UserInfo();
         String userId = String.valueOf(IdWorker.getId(userInfo)); // todo 非原子操作？是否导致id不再单调递增？是否会有id冲突？
-        userInfo.setUserId(Long.valueOf(userId))
+        userInfo.setUserId(userId)
                 .setEmail(email)
                 .setName("默认用户_" + StrUtil.sub(userId, 0, 14));
         userInfoService.generateCode(userInfo);
@@ -101,7 +103,7 @@ public class UserController {
         // 生成验证码，发送邮件
         String userId = AuthContextHolder.getUserId(request);
         UserInfo userInfo = new UserInfo();
-        userInfo.setUserId(Long.valueOf(userId));
+        userInfo.setUserId(userId);
         userInfoService.generateCode(userInfo);
 
         return Result.ok();
@@ -136,7 +138,7 @@ public class UserController {
         log.info("修改个人信息，userInfo：{}", userInfo);
 
         String userId = AuthContextHolder.getUserId(request);
-        userInfo.setUserId(Long.valueOf(userId));
+        userInfo.setUserId(userId);
         userInfoService.updateUserInfo(userInfo);
         return Result.ok();
     }

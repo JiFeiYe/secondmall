@@ -43,7 +43,7 @@ public class GoodsController {
         log.info("保存商品进mysql，skuInfo：{}", skuInfo);
 
         String userId = AuthContextHolder.getUserId(request);
-        skuInfo.setUserId(Long.valueOf(userId));
+        skuInfo.setUserId(userId);
         SkuInfo skuInfo1 = skuInfoService.saveGoods(skuInfo); // 填充skuInfo.skuImgList返回
         // 调用es上架方法
         skuInfo1.setImgFileList(null);
@@ -96,7 +96,7 @@ public class GoodsController {
      */
     @ApiOperation("删除商品")
     @DeleteMapping
-    public Result<String> delGoods(Long skuId) {
+    public Result<String> delGoods(String skuId) {
         log.info("删除商品，skuId：{}", skuId);
 
         // 调用es下架商品方法

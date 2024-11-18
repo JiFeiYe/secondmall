@@ -12,7 +12,7 @@ public interface SearchService {
 
     void upperGoods(SkuInfo skuInfo);
 
-    void lowerGoods(Long goodId);
+    void lowerGoods(String goodId);
 
     SearchResponseVo search(SearchParam searchParam);
 }

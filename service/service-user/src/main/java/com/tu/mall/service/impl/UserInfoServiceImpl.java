@@ -104,7 +104,7 @@ public class UserInfoServiceImpl implements IUserInfoService {
     public void setUserInfo(String userId, String password, String code) {
         // 从redis获取信息
         String key = "Verify_Email_Code_" + userId;
-        String redisMap = redisTemplate.opsForValue().getAndDelete(key);
+        String redisMap = redisTemplate.opsForValue().get(key);
         JSONObject jsonObject = JSONUtil.parseObj(redisMap);
         String name = jsonObject.getStr("name");
         String email = jsonObject.getStr("email");
@@ -117,11 +117,13 @@ public class UserInfoServiceImpl implements IUserInfoService {
         password = DigestUtils.md5DigestAsHex(password.getBytes(StandardCharsets.UTF_8));
         // 设置用户信息
         UserInfo userInfo = new UserInfo()
-                .setUserId(Long.valueOf(userId))
+                .setUserId(userId)
                 .setName(name)
                 .setEmail(email)
                 .setPassword(password);
         userInfoMapper.insertOrUpdate(userInfo);
+
+        redisTemplate.delete(key);
     }
 
     @Override

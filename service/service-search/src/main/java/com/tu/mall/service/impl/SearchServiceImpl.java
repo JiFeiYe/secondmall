@@ -7,6 +7,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.tu.mall.api.SearchService;
 import com.tu.mall.common.exception.CustomException;
 import com.tu.mall.entity.*;
@@ -17,6 +18,7 @@ import com.tu.mall.entity.es.SearchResponseVo;
 import com.tu.mall.entity.view.CategoryView;
 import com.tu.mall.mapper.AttributeMapper;
 import com.tu.mall.mapper.AttributeValueMapper;
+import com.tu.mall.mapper.SkuInfoMapper;
 import com.tu.mall.mapper.view.CategoryViewMapper;
 import com.tu.mall.repository.GoodRepository;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -37,7 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author JiFeiYe
@@ -52,6 +54,8 @@ public class SearchServiceImpl implements SearchService {
     private AttributeValueMapper attributeValueMapper;
     @Autowired
     private CategoryViewMapper categoryViewMapper;
+    @Autowired
+    private SkuInfoMapper skuInfoMapper;
 
     @Autowired
     private GoodRepository goodRepository;
@@ -81,7 +85,8 @@ public class SearchServiceImpl implements SearchService {
         // 设置searchAttrList
         List<SkuAttributeValue> skuAttributeValueList = skuInfo.getSkuAttributeValueList();
         List<SearchAttr> searchAttrList = new ArrayList<>();
-        AtomicLong category3Id = new AtomicLong(0); // 原子更新
+        AtomicReference<String> category3Id = new AtomicReference<>("0"); // 原子更新
+//        AtomicLong category3Id = new AtomicLong(0); // 原子更新
         if (skuAttributeValueList != null && CollUtil.isNotEmpty(skuAttributeValueList)) {
             skuAttributeValueList.forEach(skuAttributeValue -> {
                 SearchAttr searchAttr = new SearchAttr();
@@ -100,7 +105,7 @@ public class SearchServiceImpl implements SearchService {
                         attributeValue.getName()
                 );
                 searchAttrList.add(searchAttr);
-                category3Id.compareAndSet(0, attribute.getCategoryId()); // 就第一次就行了，后面都跳过
+                category3Id.compareAndSet("0", attribute.getCategoryId()); // 就第一次就行了，后面都跳过
             });
         }
         good.setAttrList(searchAttrList);
@@ -113,11 +118,17 @@ public class SearchServiceImpl implements SearchService {
         // 加入es
         System.out.println(good);
         goodRepository.save(good);
+
+        skuInfo.setStatus(1);
+        skuInfoMapper.updateById(skuInfo);
     }
 
     @Override
-    public void lowerGoods(Long goodId) {
+    public void lowerGoods(String goodId) {
         goodRepository.deleteById(goodId);
+        LambdaUpdateWrapper<SkuInfo> luw = new LambdaUpdateWrapper<>();
+        luw.eq(SkuInfo::getId, goodId).set(SkuInfo::getStatus, 0);
+        skuInfoMapper.update(luw);
     }
 
     @Override
@@ -132,11 +143,13 @@ public class SearchServiceImpl implements SearchService {
         SearchResponseVo vo = this.parseResponse(response);
         vo.setPage(searchParam.getPage());
         vo.setSize(searchParam.getSize());
-        vo.setTotalPages(
-                vo.getTotal() % searchParam.getSize() == 0 ?
-                        vo.getTotal() / searchParam.getSize() :
-                        vo.getTotal() / searchParam.getSize() + 1
-        );
+        if (searchParam.getSize() != 0) {
+            vo.setTotalPages(
+                    (vo.getTotal() % searchParam.getSize()) == 0 ?
+                            vo.getTotal() / searchParam.getSize() :
+                            vo.getTotal() / searchParam.getSize() + 1
+            );
+        }
         return vo;
     }
 

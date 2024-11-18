@@ -36,7 +36,7 @@ public class OrderController {
      */
     @ApiOperation("获取预备下订单时的页面信息")
     @PostMapping("/beforeOrder")
-    public Result<Map<String, Object>> beforeOrder(HttpServletRequest request, Long skuId) {
+    public Result<Map<String, Object>> beforeOrder(HttpServletRequest request, String skuId) {
         log.info("获取预备下订单时的页面信息，skuId：{}", skuId);
 
         String userId = AuthContextHolder.getUserId(request);

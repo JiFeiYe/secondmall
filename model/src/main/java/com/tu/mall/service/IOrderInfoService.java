@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public interface IOrderInfoService {
 
-    Map<String, Object> getBeforeOrder(String userId, Long skuId);
+    Map<String, Object> getBeforeOrder(String userId, String skuId);
 
     void submitOrder(OrderInfo orderInfo);
 

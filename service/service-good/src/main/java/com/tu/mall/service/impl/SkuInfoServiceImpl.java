@@ -43,7 +43,7 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
     public SkuInfo saveGoods(SkuInfo skuInfo) {
         // 保存skuInfo
         {
-            skuInfo.setStatus(1); // 尚未上架es
+            skuInfo.setStatus(0); // 尚未上架es
             skuInfoMapper.insert(skuInfo);
         }
 
@@ -59,7 +59,7 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
                     skuImg.setSkuId(skuInfo.getId());
                     skuImg.setName(url.substring(url.lastIndexOf("/") + 1));
                     skuImg.setUrl(url);
-                    skuImg.setId(IdWorker.getId(skuImg));
+                    skuImg.setId(IdWorker.getIdStr(skuImg));
                     skuImgList.add(skuImg);
                 }
                 skuImgMapper.insert(skuImgList);
@@ -87,7 +87,7 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
         List<SkuInfo> skuInfoList = new ArrayList<>();
         for (SkuInfo skuInfo : skuInfopage.getRecords()) {
             // 补充图片信息
-            Long skuId = skuInfo.getId();
+            String skuId = skuInfo.getId();
             LambdaQueryWrapper<SkuImg> lqw1 = new LambdaQueryWrapper<>();
             lqw1.eq(SkuImg::getSkuId, skuId);
             List<SkuImg> skuImgList = skuImgMapper.selectList(lqw1);
@@ -111,16 +111,18 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
         List<SkuInfo> skuInfoList = new ArrayList<>();
         for (SkuInfo skuInfo : skuInfopage.getRecords()) {
             // 补充图片信息
-            Long skuId = skuInfo.getId();
+            String skuId = skuInfo.getId();
             LambdaQueryWrapper<SkuImg> lqw1 = new LambdaQueryWrapper<>();
             lqw1.eq(SkuImg::getSkuId, skuId);
             List<SkuImg> skuImgList = skuImgMapper.selectList(lqw1);
-            skuInfo.setSkuImgList(skuImgList);
+            if (CollUtil.isNotEmpty(skuImgList))
+                skuInfo.setSkuImgList(skuImgList);
             // 补充属性信息
             LambdaQueryWrapper<SkuAttributeValue> lqw2 = new LambdaQueryWrapper<>();
             lqw2.eq(SkuAttributeValue::getSkuId, skuId);
             List<SkuAttributeValue> skuAttributeValueList = skuAttributeValueMapper.selectList(lqw2);
-            skuInfo.setSkuAttributeValueList(skuAttributeValueList);
+            if (CollUtil.isNotEmpty(skuAttributeValueList))
+                skuInfo.setSkuAttributeValueList(skuAttributeValueList);
 
             skuInfoList.add(skuInfo);
         }
@@ -129,7 +131,7 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
     }
 
     @Override
-    public SkuInfo getGoods(Long skuId) {
+    public SkuInfo getGoods(String skuId) {
         SkuInfo skuInfo = skuInfoMapper.selectById(skuId);
         {
             LambdaQueryWrapper<SkuImg> lqw = new LambdaQueryWrapper<>();
@@ -152,7 +154,7 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
     public void updateGoods(String userId, SkuInfo skuInfo) {
         // 更新skuInfo
         {
-            skuInfo.setUserId(Long.valueOf(userId));
+            skuInfo.setUserId(userId);
             skuInfoMapper.updateById(skuInfo);
         }
 
@@ -177,7 +179,7 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
                 if (CollUtil.isNotEmpty(imgs)) {
                     skuImgList.addAll(imgs);
                 }
-                List<Long> ids = skuImgList.stream().map(SkuImg::getId).collect(Collectors.toList());
+                List<String> ids = skuImgList.stream().map(SkuImg::getId).collect(Collectors.toList());
                 LambdaQueryWrapper<SkuImg> lqw = new LambdaQueryWrapper<>();
                 lqw.eq(SkuImg::getSkuId, skuInfo.getId())
                         .notIn(SkuImg::getId, ids);
@@ -187,7 +189,7 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
                 if (CollUtil.isNotEmpty(imgs)) {
                     skuImgs.addAll(imgs);
                 }
-                List<Long> ids = skuImgs.stream().map(SkuImg::getId).collect(Collectors.toList());
+                List<String> ids = skuImgs.stream().map(SkuImg::getId).collect(Collectors.toList());
                 LambdaQueryWrapper<SkuImg> lqw = new LambdaQueryWrapper<>();
                 lqw.eq(SkuImg::getSkuId, skuInfo.getId())
                         .notIn(SkuImg::getId, ids);
@@ -202,7 +204,7 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
         {
             List<SkuAttributeValue> skuAttributeValueList = skuInfo.getSkuAttributeValueList();
             if (skuAttributeValueList != null) {
-                List<Long> ids = skuAttributeValueList
+                List<String> ids = skuAttributeValueList
                         .stream()
                         .map(SkuAttributeValue::getId)
                         .collect(Collectors.toList());
@@ -222,7 +224,7 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
     }
 
     @Override
-    public void delGoods(Long skuId) {
+    public void delGoods(String skuId) {
         // 删除sku_attribute_value
         {
             LambdaQueryWrapper<SkuAttributeValue> lqw = new LambdaQueryWrapper<>();
@@ -248,7 +250,7 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
     }
 
     @Override
-    public String getUserId(Long skuId) {
+    public String getUserId(String skuId) {
         SkuInfo skuInfo = skuInfoMapper.selectById(skuId);
         return String.valueOf(skuInfo.getUserId());
     }

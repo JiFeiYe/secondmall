@@ -24,7 +24,7 @@ public class JWTUtil {
      * @param userId 用户id
      * @return {@code String}
      */
-    public static String getToken(Long userId) {
+    public static String getToken(String userId) {
         return JWT.create()
                 .setSigner(JWTSignerUtil.hs256(KEY)) // 算法+密钥
                 .setPayload("userId", userId) // 载荷

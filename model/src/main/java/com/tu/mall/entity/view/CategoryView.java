@@ -23,15 +23,15 @@ public class CategoryView implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("一级分类id")
-    private Long category1Id;
+    private String category1Id;
     @ApiModelProperty("一级分类名")
     private String category1Name;
     @ApiModelProperty("二级分类id")
-    private Long category2Id;
+    private String category2Id;
     @ApiModelProperty("二级分类名")
     private String category2Name;
     @ApiModelProperty("三级分类id")
-    private Long category3Id;
+    private String category3Id;
     @ApiModelProperty("三级分类名")
     private String category3Name;
 }

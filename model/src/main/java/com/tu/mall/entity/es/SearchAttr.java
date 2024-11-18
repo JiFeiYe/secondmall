@@ -19,8 +19,8 @@ public class SearchAttr {
      * 属性Id
      */
     @ApiModelProperty("属性Id")
-    @Field(type = FieldType.Long, index = false)
-    private Long attrId;
+    @Field(type = FieldType.Text, index = false)
+    private String attrId;
     /**
      * 属性
      */
@@ -31,8 +31,8 @@ public class SearchAttr {
      * 属性值Id
      */
     @ApiModelProperty("属性值Id")
-    @Field(type = FieldType.Long, index = false)
-    private Long attrValueId;
+    @Field(type = FieldType.Text, index = false)
+    private String attrValueId;
     /**
      * 属性值
      */

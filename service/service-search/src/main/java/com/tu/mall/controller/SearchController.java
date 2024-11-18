@@ -52,7 +52,7 @@ public class SearchController {
      */
     @ApiOperation("下架商品")
     @PostMapping("/lower")
-    public Result<String> lowerGoods(Long goodId) {
+    public Result<String> lowerGoods(String goodId) {
         log.info("开始下架商品， goodId：{}", goodId);
 
         searchService.lowerGoods(goodId);

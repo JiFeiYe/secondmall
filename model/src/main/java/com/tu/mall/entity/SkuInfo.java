@@ -54,13 +54,13 @@ public class SkuInfo implements Serializable {
      */
     @ApiModelProperty("雪花id")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;
+    private String id;
 
     /**
      * 用户id
      */
     @ApiModelProperty("用户id")
-    private Long userId;
+    private String userId;
 
     /**
      * 商品标题
@@ -90,7 +90,7 @@ public class SkuInfo implements Serializable {
      * 三级分类id（冗余）
      */
     @ApiModelProperty("三级分类id（冗余）")
-    private Long categoryId;
+    private String categoryId;
 
     @ApiModelProperty("")
     @TableField(fill = FieldFill.INSERT)

@@ -32,13 +32,13 @@ public class SkuImg implements Serializable {
      */
     @ApiModelProperty("雪花图片id")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;
+    private String id;
 
     /**
      * 对应spu的id
      */
     @ApiModelProperty("对应spu的id")
-    private Long skuId;
+    private String skuId;
 
     /**
      * 图片名字（带后缀）

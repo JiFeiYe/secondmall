@@ -33,13 +33,13 @@ public class OrderAddress implements Serializable {
      */
     @ApiModelProperty("雪花id")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;
+    private String id;
 
     /**
      * 订单id
      */
     @ApiModelProperty("订单id")
-    private Long orderId;
+    private String orderId;
 
     /**
      * 姓名

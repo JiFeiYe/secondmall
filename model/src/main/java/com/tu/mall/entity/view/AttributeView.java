@@ -23,13 +23,13 @@ public class AttributeView implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("属性id")
-    private Long attrId;
+    private String attrId;
     @ApiModelProperty("属性")
     private String attrName;
     @ApiModelProperty("三级分类id")
-    private Long categoryId; // 三级
+    private String categoryId; // 三级
     @ApiModelProperty("属性值id")
-    private Long attrValueId;
+    private String attrValueId;
     @ApiModelProperty("属性值")
     private String attrValueName;
 }

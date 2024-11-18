@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 搜索条件
  *
@@ -12,7 +14,9 @@ import lombok.Data;
  */
 @ApiModel(description = "搜索条件")
 @Data
-public class SearchParam {
+public class SearchParam implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("一级分类id")
     private Long category1Id;

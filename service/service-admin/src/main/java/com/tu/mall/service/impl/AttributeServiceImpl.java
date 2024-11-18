@@ -41,12 +41,12 @@ public class AttributeServiceImpl implements IAttributeService {
         // 获取所有属性、属性值列表
         List<AttributeView> attributeViewList = attributeViewMapper.selectList(null);
         // 先按attrId分组
-        Map<Long, List<AttributeView>> map = attributeViewList
+        Map<String, List<AttributeView>> map = attributeViewList
                 .stream()
                 .filter(attributeView -> attributeView.getAttrId() != null) // 过滤null值
                 .collect(Collectors.groupingBy(AttributeView::getAttrId));
         List<JSONObject> jsonObjectList = new ArrayList<>();
-        for (Map.Entry<Long, List<AttributeView>> next : map.entrySet()) {
+        for (Map.Entry<String, List<AttributeView>> next : map.entrySet()) {
             JSONObject obj = JSONUtil.createObj();
             obj.set("attrId", next.getKey());
             obj.set("attrName", next.getValue().get(0).getAttrName());
@@ -87,8 +87,8 @@ public class AttributeServiceImpl implements IAttributeService {
 
     @Override
     public void delAttribute(AttributeView attributeView) {
-        Long attrId = attributeView.getAttrId();
-        Long attrValueId = attributeView.getAttrValueId();
+        String attrId = attributeView.getAttrId();
+        String attrValueId = attributeView.getAttrValueId();
         if (ObjectUtil.isNotNull(attrId) && ObjectUtil.isNotNull(attrValueId)) {
             attributeValueMapper.deleteById(attrValueId);
         } else if (ObjectUtil.isNotNull(attrId)) {
