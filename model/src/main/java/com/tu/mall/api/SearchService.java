@@ -15,4 +15,6 @@ public interface SearchService {
     void lowerGoods(String goodId);
 
     SearchResponseVo search(SearchParam searchParam);
+
+    SearchResponseVo search(String skuId);
 }

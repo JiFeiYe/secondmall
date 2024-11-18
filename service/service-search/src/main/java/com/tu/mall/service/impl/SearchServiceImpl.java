@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.tu.mall.api.SearchService;
 import com.tu.mall.common.exception.CustomException;
+import com.tu.mall.common.result.ResultCodeEnum;
 import com.tu.mall.entity.*;
 import com.tu.mall.entity.es.Good;
 import com.tu.mall.entity.es.SearchAttr;
@@ -23,6 +24,8 @@ import com.tu.mall.mapper.view.CategoryViewMapper;
 import com.tu.mall.repository.GoodRepository;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.lucene.search.join.ScoreMode;
+import org.elasticsearch.action.get.GetRequest;
+import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -150,6 +153,34 @@ public class SearchServiceImpl implements SearchService {
                             vo.getTotal() / searchParam.getSize() + 1
             );
         }
+        return vo;
+    }
+
+    @Override
+    public SearchResponseVo search(String skuId) {
+        GetRequest getRequest = new GetRequest("good", skuId);
+        GetResponse response;
+        try {
+            response = restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            throw new CustomException(e.getMessage(), 5002);
+        }
+        // 检查文档是否存在
+        List<Good> goodList = new ArrayList<>();
+        if (response.isExists()) {
+            // 获取文档的 ID
+            String documentId = response.getId();
+            System.out.println("Document ID: " + documentId);
+
+            // 获取文档的源数据（作为 JSON 字符串）
+            String sourceString = response.getSourceAsString();
+            Good good = JSONUtil.toBean(sourceString, Good.class);
+            goodList.add(good);
+        } else {
+            throw new CustomException(ResultCodeEnum.SEARCH_FAIL);
+        }
+        SearchResponseVo vo = new SearchResponseVo();
+        vo.setGoodList(goodList);
         return vo;
     }
 

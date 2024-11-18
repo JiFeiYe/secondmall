@@ -20,6 +20,7 @@ public enum ResultCodeEnum {
     CATEGORY_FAIL(4006, "分类参数错误"),
     ATTRIBUTE_FAIL(4007, "属性参数错误"),
     SUBMIT_ORDER_FAIL(4008, "不能重复提交订单"),
+    SEARCH_FAIL(4009, "搜索失败"),
 
     EMAIL_FAIL(5001, "邮件发送失败"),
     // 5002 IOException,
