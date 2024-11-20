@@ -46,6 +46,13 @@ public class Attribute implements Serializable {
     @ApiModelProperty("对应三级分类id")
     private String categoryId;
 
+    /**
+     * 三级分类名称
+     */
+    @ApiModelProperty("三级分类名称")
+    @TableField(exist = false)
+    private String categoryName;
+
     @ApiModelProperty("")
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

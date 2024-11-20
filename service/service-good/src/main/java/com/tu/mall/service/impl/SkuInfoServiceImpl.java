@@ -4,14 +4,15 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.tu.mall.entity.SkuAttributeValue;
-import com.tu.mall.entity.SkuImg;
-import com.tu.mall.entity.SkuInfo;
+import com.tu.mall.entity.*;
 import com.tu.mall.mapper.SkuAttributeValueMapper;
 import com.tu.mall.mapper.SkuImgMapper;
 import com.tu.mall.mapper.SkuInfoMapper;
+import com.tu.mall.service.IAttributeService;
+import com.tu.mall.service.IAttributeValueService;
 import com.tu.mall.service.ISkuInfoService;
 import com.tu.mall.template.OSSTemplate;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,11 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
     private SkuImgMapper skuImgMapper;
     @Autowired
     private SkuAttributeValueMapper skuAttributeValueMapper;
+
+    @DubboReference
+    private IAttributeService attributeService;
+    @DubboReference
+    private IAttributeValueService attributeValueService;
 
     @Override
     public SkuInfo saveGoods(SkuInfo skuInfo) {
@@ -136,15 +142,19 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
         {
             LambdaQueryWrapper<SkuImg> lqw = new LambdaQueryWrapper<>();
             lqw.eq(SkuImg::getSkuId, skuId);
-            SkuImg skuImg = skuImgMapper.selectOne(lqw);
-            List<SkuImg> skuImgList = new ArrayList<>();
-            skuImgList.add(skuImg);
+            List<SkuImg> skuImgList = skuImgMapper.selectList(lqw);
             skuInfo.setSkuImgList(skuImgList);
         }
         {
             LambdaQueryWrapper<SkuAttributeValue> lqw = new LambdaQueryWrapper<>();
             lqw.eq(SkuAttributeValue::getSkuId, skuId);
             List<SkuAttributeValue> skuAttributeValues = skuAttributeValueMapper.selectList(lqw);
+            for (SkuAttributeValue skuAttributeValue : skuAttributeValues) {
+                Attribute attribute = attributeService.getAttrById(skuAttributeValue.getAttrId());
+                AttributeValue attributeValue = attributeService.getAttrValueById(skuAttributeValue.getAttrValueId());
+                skuAttributeValue.setAttrName(attribute.getName());
+                skuAttributeValue.setAttrValueName(attributeValue.getName());
+            }
             skuInfo.setSkuAttributeValueList(skuAttributeValues);
         }
         return skuInfo;

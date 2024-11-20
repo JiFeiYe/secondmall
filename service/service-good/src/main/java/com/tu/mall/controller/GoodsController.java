@@ -104,4 +104,19 @@ public class GoodsController {
         skuInfoService.delGoods(skuId);
         return Result.ok();
     }
+
+    /**
+     * 根据id获取商品信息
+     *
+     * @param skuId 商品id
+     * @return {@code Result<SkuInfo>}
+     */
+    @ApiOperation("根据id获取商品信息")
+    @GetMapping("/getone")
+    public Result<SkuInfo> getSkuInfoById(String skuId) {
+        log.info("根据id获取商品信息，skuId：{}", skuId);
+
+        SkuInfo skuInfo = skuInfoService.getGoods(skuId);
+        return Result.ok(skuInfo);
+    }
 }

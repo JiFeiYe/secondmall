@@ -46,10 +46,23 @@ public class SkuAttributeValue implements Serializable {
     @ApiModelProperty("基本/销售属性id")
     private String attrId;
     /**
+     * 基本/销售属性
+     */
+    @ApiModelProperty("基本/销售属性")
+    @TableField(exist = false)
+    private String attrName;
+
+    /**
      * 基本/销售属性值id
      */
     @ApiModelProperty("基本/销售属性值id")
     private String attrValueId;
+    /**
+     * 基本/销售属性值
+     */
+    @ApiModelProperty("基本/销售属性值")
+    @TableField(exist = false)
+    private String attrValueName;
 
     @ApiModelProperty("")
     @TableField(fill = FieldFill.INSERT)

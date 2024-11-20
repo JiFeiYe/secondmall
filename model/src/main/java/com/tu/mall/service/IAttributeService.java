@@ -1,6 +1,8 @@
 package com.tu.mall.service;
 
 import cn.hutool.json.JSONObject;
+import com.tu.mall.entity.Attribute;
+import com.tu.mall.entity.AttributeValue;
 import com.tu.mall.entity.view.AttributeView;
 
 import java.util.List;
@@ -15,9 +17,19 @@ import java.util.List;
  */
 public interface IAttributeService {
 
-    List<JSONObject> getAttributeList();
+    List<JSONObject> getAttributeAndValueList();
 
     void setAttribute(AttributeView attributeView);
 
     void delAttribute(AttributeView attributeView);
+
+    List<Attribute> getAttribute(String categoryId);
+
+    List<AttributeValue> getAttributeValue();
+
+    List<AttributeValue> getValueByAttrId(String attrId);
+
+    Attribute getAttrById(String attrId);
+
+    AttributeValue getAttrValueById(String attrValueId);
 }

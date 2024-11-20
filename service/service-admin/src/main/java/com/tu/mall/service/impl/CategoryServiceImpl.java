@@ -1,7 +1,5 @@
 package com.tu.mall.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -139,14 +137,14 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public List<Category2> getCategory2(String category1Id) {
         LambdaQueryWrapper<Category2> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(Category2::getCategory1Id, category1Id);
+        lqw.eq(StrUtil.isNotEmpty(category1Id), Category2::getCategory1Id, category1Id);
         return category2Mapper.selectList(lqw);
     }
 
     @Override
     public List<Category3> getCategory3(String category2Id) {
         LambdaQueryWrapper<Category3> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(Category3::getCategory2Id, category2Id);
+        lqw.eq(StrUtil.isNotEmpty(category2Id), Category3::getCategory2Id, category2Id);
         return category3Mapper.selectList(lqw);
     }
 
@@ -177,5 +175,10 @@ public class CategoryServiceImpl implements ICategoryService {
         } else {
             throw new CustomException(ResultCodeEnum.CATEGORY_FAIL);
         }
+    }
+
+    @Override
+    public Category3 getCategory3ById(String category3Id) {
+        return category3Mapper.selectById(category3Id);
     }
 }

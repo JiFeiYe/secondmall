@@ -117,4 +117,19 @@ public class CategoryController {
         categoryService.delCategory(categoryView);
         return Result.ok();
     }
+
+    /**
+     * 根据id获取三级分类
+     *
+     * @param category3Id 三级分类id
+     * @return {@code Result<Category3>}
+     */
+    @ApiOperation("根据id获取三级分类")
+    @GetMapping("/category3ById")
+    public Result<Category3> getCategory3ById(String category3Id) {
+        log.info("根据id获取三级分类，category3Id：{}", category3Id);
+
+        Category3 category3 = categoryService.getCategory3ById(category3Id);
+        return Result.ok(category3);
+    }
 }

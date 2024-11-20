@@ -29,4 +29,6 @@ public interface ICategoryService {
     List<Category3> getCategory3(String category1Id);
 
     void delCategory(CategoryView categoryView);
+
+    Category3 getCategory3ById(String category3Id);
 }

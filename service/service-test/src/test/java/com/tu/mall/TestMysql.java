@@ -1,13 +1,16 @@
 package com.tu.mall;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tu.mall.api.SearchService;
+import com.tu.mall.entity.SkuAttributeValue;
 import com.tu.mall.entity.SkuImg;
 import com.tu.mall.entity.SkuInfo;
 import com.tu.mall.entity.es.SearchParam;
 import com.tu.mall.entity.es.SearchResponseVo;
+import com.tu.mall.mapper.SkuAttributeValueMapper;
 import com.tu.mall.mapper.SkuImgMapper;
 import com.tu.mall.mapper.SkuInfoMapper;
 import com.tu.mall.service.ISkuInfoService;
@@ -26,6 +29,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -40,6 +44,8 @@ public class TestMysql {
     private SkuInfoMapper skuInfoMapper;
     @Autowired
     private SkuImgMapper skuImgMapper;
+    @Autowired
+    private SkuAttributeValueMapper skuAttributeValueMapper;
 
     @Autowired
     private OSSTemplate ossTemplate;
@@ -97,4 +103,35 @@ public class TestMysql {
         System.out.println("JSONUtil.formatJsonStr(jsonStr) = \n" + JSONUtil.formatJsonStr(jsonStr));
     }
 
+    @Test
+    public void testSetSkuInfoCategoryId() {
+        LambdaUpdateWrapper<SkuInfo> luw = new LambdaUpdateWrapper<>();
+        luw.set(SkuInfo::getCategoryId, "1848608321747771393");
+        skuInfoMapper.update(luw);
+    }
+
+    // 生成商品属性数据
+    @Test
+    public void testSkuAttr() {
+        List<SkuInfo> skuInfoList = skuInfoMapper.selectList(null);
+        List<String> ids = skuInfoList.stream().map(SkuInfo::getId).collect(Collectors.toList());
+        List<SkuAttributeValue> skuAttributeValueList = new ArrayList<>();
+
+        Random random = new Random();
+        for (String id : ids) {
+            SkuAttributeValue a = new SkuAttributeValue();
+            a.setSkuId(id);
+            a.setAttrId("1");
+            a.setAttrValueId(String.valueOf(random.nextInt(4) + 1));
+            skuAttributeValueList.add(a);
+        }
+        for (String id : ids) {
+            SkuAttributeValue a = new SkuAttributeValue();
+            a.setSkuId(id);
+            a.setAttrId("2");
+            a.setAttrValueId(String.valueOf(random.nextInt(6) + 5));
+            skuAttributeValueList.add(a);
+        }
+        skuAttributeValueMapper.insert(skuAttributeValueList);
+    }
 }
