@@ -41,7 +41,7 @@ public class UserInfoServiceImpl implements IUserInfoService {
     public Map<String, String> login(String email, String password) {
         // 验证账号存在
         LambdaQueryWrapper<UserInfo> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(UserInfo::getEmail, email);
+        lqw.eq(UserInfo::getEmail, email).select(UserInfo.class, i -> true); // 查询全部字段
         UserInfo userInfo = userInfoMapper.selectOne(lqw);
         if (userInfo == null) {
             return null;
@@ -135,7 +135,7 @@ public class UserInfoServiceImpl implements IUserInfoService {
     public Map<String, String> loginAdmin(String account, String password) {
         // 验证账号存在
         LambdaQueryWrapper<UserInfo> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(UserInfo::getAccount, account);
+        lqw.eq(UserInfo::getAccount, account).select(UserInfo.class, i -> true); // 查询所有字段
         UserInfo userInfo = userInfoMapper.selectOne(lqw);
         if (ObjectUtil.isNull(userInfo)) {
             return null;

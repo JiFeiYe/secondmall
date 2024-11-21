@@ -6,6 +6,8 @@ import cn.hutool.json.JSONUtil;
 import com.tu.mall.common.result.Result;
 import com.tu.mall.common.result.ResultCodeEnum;
 import com.tu.mall.common.utils.JWTUtil;
+import org.jetbrains.annotations.NotNull;
+import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -13,10 +15,14 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -38,6 +44,25 @@ public class AuthGlobalFilter implements GlobalFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        // 拦截响应
+//        ServerHttpResponse response1 = exchange.getResponse();
+//        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+//        ServerHttpResponseDecorator decorator = new ServerHttpResponseDecorator(response1) {
+//            @NotNull
+//            @Override
+//            public Mono<Void> writeWith(@NotNull Publisher<? extends DataBuffer> body) {
+//                return super.writeWith(Flux.from(body).doOnNext(dataBuffer -> {
+//                    // 将数据缓冲区的内容写入缓冲区
+//                    try {
+//                        buffer.write(dataBuffer.asByteBuffer().array());
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }));
+//            }
+//        };
+
+        // 拦截请求
         // 获取请求对象
         ServerHttpRequest request = exchange.getRequest();
         // 获取url（作用待定->api拦截）

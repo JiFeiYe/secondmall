@@ -56,6 +56,7 @@ public class UserInfo implements Serializable {
      * 密码（MD5）
      */
     @ApiModelProperty("密码（MD5）")
+    @TableField(select = false)
     private String password;
 
     /**

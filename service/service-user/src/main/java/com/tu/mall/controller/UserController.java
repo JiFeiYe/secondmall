@@ -208,5 +208,21 @@ public class UserController {
         return Result.ok();
     }
 
+    /**
+     * 根据id获取用户信息
+     *
+     * @param userId 用户id
+     * @return {@code Result<UserInfo>}
+     */
+    @ApiOperation("根据id获取用户信息")
+    @GetMapping("/userInfo")
+    public Result<UserInfo> getUserInfo(HttpServletRequest request, String userId) {
+        log.info("根据id获取用户信息，userId：{}", userId);
+
+        if (StrUtil.isEmpty(userId))
+            userId = AuthContextHolder.getUserId(request);
+        UserInfo userInfo = userInfoService.getUserInfo(userId);
+        return Result.ok(userInfo);
+    }
 
 }
