@@ -41,6 +41,20 @@ public class UserAddress implements Serializable {
     private String userId;
 
     /**
+     * 用户名称
+     */
+    @ApiModelProperty("用户名称")
+    @TableField(exist = false)
+    private String name;
+
+    /**
+     * 手机号
+     */
+    @ApiModelProperty("手机号")
+    @TableField(exist = false)
+    private String phone;
+
+    /**
      * 邮编
      */
     @ApiModelProperty("邮编")

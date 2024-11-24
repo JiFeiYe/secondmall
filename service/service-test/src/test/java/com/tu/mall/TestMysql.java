@@ -198,18 +198,16 @@ public class TestMysql {
                     Districts subDistricts1 = districts.getDistricts().get(i);
                     String city = subDistricts1.getName();
                     userAddressList.get(index).setCity(city);
-                    userAddressList.get(index).setDetailAddress(province + city);
 
                     if (CollUtil.isNotEmpty(subDistricts1.getDistricts())) {
                         Districts subDistricts2 = subDistricts1.getDistricts().get(0);
                         String district = subDistricts2.getName();
                         userAddressList.get(index).setDistrict(district);
-                        userAddressList.get(index).setDetailAddress(province + city + district);
 
                         if (CollUtil.isNotEmpty(subDistricts2.getDistricts())) {
                             Districts subDistricts3 = subDistricts2.getDistricts().get(0);
                             userAddressList.get(index).setDetailAddress(
-                                    province + city + district + subDistricts3.getName()
+                                    subDistricts3.getName()
                             );
                         }
                     }
@@ -225,8 +223,11 @@ public class TestMysql {
 
     @Test
     public void testAddress2() {
-        String s = generateRandomCoordinates(10);
-        System.out.println("s = " + s);
+        List<UserAddress> userAddressList = userAddressMapper.selectList(null);
+        for (UserAddress userAddress : userAddressList) {
+            userAddress.setDetailAddress("");
+        }
+        userAddressMapper.updateById(userAddressList);
     }
 
     /**

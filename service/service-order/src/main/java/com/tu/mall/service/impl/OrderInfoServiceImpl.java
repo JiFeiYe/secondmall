@@ -53,6 +53,11 @@ public class OrderInfoServiceImpl implements IOrderInfoService {
         List<UserAddress> userAddressList = userAddressService.getUserAddress(userId);
         SkuInfo skuInfo = skuInfoService.getGoods(skuId);
 
+        for (UserAddress userAddress : userAddressList) {
+            userAddress.setName(userInfo.getName());
+            userAddress.setPhone(userInfo.getPhone());
+        }
+
         Map<String, Object> map = new HashMap<>();
         if (ObjectUtil.isNotNull(userInfo)) {
             map.put("userInfo", userInfo);

@@ -19,6 +19,8 @@ public interface IUserAddressService {
 
     List<UserAddress> getUserAddress(String userId);
 
+    void setAddress(String userId, UserAddress userAddress);
+
     void saveAddress(String userId, UserAddress userAddress);
 
     void updateAddress(String userId, UserAddress userAddress);

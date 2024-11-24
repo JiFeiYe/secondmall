@@ -161,6 +161,22 @@ public class UserController {
     }
 
     /**
+     * 新增or更新用户地址
+     *
+     * @param userAddress 用户地址详情
+     * @return {@code Result<String>}
+     */
+    @ApiOperation("新增or更新用户地址")
+    @PostMapping("/setAddress")
+    public Result<String> setAddress(HttpServletRequest request, @RequestBody UserAddress userAddress) {
+        log.info("新增or更新用户地址，userAddress：{}", userAddress);
+
+        String userId = AuthContextHolder.getUserId(request);
+        userAddressService.setAddress(userId, userAddress);
+        return Result.ok();
+    }
+
+    /**
      * 新增用户地址
      *
      * @param userAddress 用户地址详情

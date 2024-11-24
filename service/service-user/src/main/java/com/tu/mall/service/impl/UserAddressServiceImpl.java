@@ -36,6 +36,12 @@ public class UserAddressServiceImpl implements IUserAddressService {
         return userAddressMapper.selectList(lqw);
     }
 
+    @Override
+    public void setAddress(String userId, UserAddress userAddress) {
+        userAddress.setUserId(userId);
+        userAddressMapper.insertOrUpdate(userAddress);
+    }
+
     // 新增用户地址
     @Override
     public void saveAddress(String userId, UserAddress userAddress) {

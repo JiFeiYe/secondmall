@@ -75,7 +75,7 @@ public class OrderAddress implements Serializable {
      * 区
      */
     @ApiModelProperty("区")
-    private String region;
+    private String district;
 
     /**
      * 详细地址
