@@ -1,7 +1,10 @@
 package com.tu.mall.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tu.mall.entity.SkuAttributeValue;
 import com.tu.mall.entity.SkuInfo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -25,5 +28,7 @@ public interface ISkuInfoService {
 
     void delGoods(String skuId);
 
-    String getUserId(String skuId);
+    String getUserIdBySkuId(String skuId);
+
+    List<SkuAttributeValue> getAttrBySkuId(String skuId);
 }

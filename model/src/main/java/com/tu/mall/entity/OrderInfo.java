@@ -67,9 +67,15 @@ public class OrderInfo implements Serializable {
     private String sellerId;
 
     /**
-     * 订单状态（0待付款，1待发货，2已发货，3已完成，4已关闭）
+     * 订单备注
      */
-    @ApiModelProperty("订单状态（0待付款，1待发货，2已发货，3已完成，4已关闭）")
+    @ApiModelProperty("订单备注")
+    private String remark;
+
+    /**
+     * 订单状态（0待支付，1待发货，2待收货，3已完成，4已取消）
+     */
+    @ApiModelProperty("订单状态（0待支付，1待发货，2待收货，3已完成，4已取消）")
     private Integer status;
 
     /**

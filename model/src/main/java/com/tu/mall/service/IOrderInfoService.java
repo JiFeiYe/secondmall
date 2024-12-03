@@ -17,7 +17,7 @@ public interface IOrderInfoService {
 
     Map<String, Object> getBeforeOrder(String userId, String skuId);
 
-    void submitOrder(OrderInfo orderInfo);
+    OrderInfo submitOrder(OrderInfo orderInfo);
 
     Page<OrderInfo> getOrderByPage(int i, String userId, Integer page, Integer size);
 }

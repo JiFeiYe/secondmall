@@ -76,7 +76,7 @@ public class UserController {
         userInfoService.verifyEmail(email);
         // 生成验证码，发送邮件
         UserInfo userInfo = new UserInfo();
-        String userId = String.valueOf(IdWorker.getId(userInfo)); // todo 非原子操作？是否导致id不再单调递增？是否会有id冲突？
+        String userId = IdWorker.getIdStr(userInfo); // todo 非原子操作？是否导致id不再单调递增？是否会有id冲突？
         userInfo.setUserId(userId)
                 .setEmail(email)
                 .setName("默认用户_" + StrUtil.sub(userId, 0, 14));

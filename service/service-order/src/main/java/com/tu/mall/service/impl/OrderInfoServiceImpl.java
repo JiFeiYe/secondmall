@@ -1,10 +1,10 @@
 package com.tu.mall.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tu.mall.common.exception.CustomException;
 import com.tu.mall.common.result.ResultCodeEnum;
@@ -19,12 +19,14 @@ import com.tu.mall.service.IUserInfoService;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author JiFeiYe
@@ -72,55 +74,69 @@ public class OrderInfoServiceImpl implements IOrderInfoService {
     }
 
     @Override
-    public void submitOrder(OrderInfo orderInfo) {
+    @Transactional
+    public OrderInfo submitOrder(OrderInfo orderInfo) {
         SkuInfo skuInfo = orderInfo.getSkuInfo();
         OrderAddress orderAddress1 = orderInfo.getOrderAddress();
-        List<OrderAddress> orderAddressList = new ArrayList<>();
+//        List<OrderAddress> orderAddressList = new ArrayList<>();
         if (ObjectUtil.isNotNull(orderAddress1)) { // 收货人地址
-            UserInfo userInfo = userInfoService.getUserInfo(String.valueOf(orderInfo.getBuyerId()));
-            BeanUtil.copyProperties(userInfo, orderAddress1);
             orderAddress1.setType(1); // 1收货人
             orderAddress1.setDeliveryWay("自提");
             orderAddress1.setFreight(new BigDecimal(0));
-            orderAddressList.add(orderAddress1);
+            orderAddress1.setOrderId(IdWorker.getIdStr(orderInfo));
+//            orderAddressList.add(orderAddress1);
         } else
             throw new CustomException(ResultCodeEnum.SUBMIT_ORDER_FAIL);
 
-        String sellerId = String.valueOf(orderInfo.getSellerId());
+        String sellerId = orderInfo.getSellerId();
         if (StrUtil.isEmpty(sellerId)) {
-            sellerId = skuInfoService.getUserId(skuInfo.getId()); // 获取卖家id
+            sellerId = skuInfoService.getUserIdBySkuId(skuInfo.getId()); // 获取卖家id
             if (StrUtil.isNotEmpty(sellerId)) { // 发货人地址
-                OrderAddress orderAddress = new OrderAddress();
-                UserInfo userInfo = userInfoService.getUserInfo(sellerId);
-                List<UserAddress> userAddress1 = userAddressService.getUserAddress(sellerId);
-                BeanUtil.copyProperties(userInfo, orderAddress);
-                BeanUtil.copyProperties(userAddress1, orderAddress);
-                orderAddress.setType(0); // 0发货人
-                orderAddress.setDeliveryWay("自提");
-                orderAddress.setFreight(new BigDecimal(0));
-                orderAddressList.add(orderAddress);
+//                OrderAddress orderAddress = new OrderAddress();
+//                UserInfo userInfo = userInfoService.getUserInfo(sellerId);
+//                List<UserAddress> userAddress1 = userAddressService.getUserAddress(sellerId);
+//                BeanUtil.copyProperties(userInfo, orderAddress);
+//                BeanUtil.copyProperties(userAddress1.get(0), orderAddress);
+//                orderAddress.setType(0); // 0发货人
+//                orderAddress.setDeliveryWay("自提");
+//                orderAddress.setFreight(new BigDecimal(0));
+//                orderAddressList.add(orderAddress);
+                orderInfo.setSellerId(sellerId);
             } else
                 throw new CustomException(ResultCodeEnum.SUBMIT_ORDER_FAIL);
         } else {
-            OrderAddress orderAddress = new OrderAddress();
-            UserInfo userInfo = userInfoService.getUserInfo(sellerId);
-            List<UserAddress> userAddress1 = userAddressService.getUserAddress(sellerId);
-            BeanUtil.copyProperties(userInfo, orderAddress);
-            BeanUtil.copyProperties(userAddress1, orderAddress);
-            orderAddress.setType(0); // 0发货人
-            orderAddress.setDeliveryWay("自提");
-            orderAddress.setFreight(new BigDecimal(0));
-            orderAddressList.add(orderAddress);
+//            OrderAddress orderAddress = new OrderAddress();
+//            UserInfo userInfo = userInfoService.getUserInfo(sellerId);
+//            List<UserAddress> userAddress1 = userAddressService.getUserAddress(sellerId);
+//            BeanUtil.copyProperties(userInfo, orderAddress);
+//            BeanUtil.copyProperties(userAddress1, orderAddress);
+//            orderAddress.setType(0); // 0发货人
+//            orderAddress.setDeliveryWay("自提");
+//            orderAddress.setFreight(new BigDecimal(0));
+//            orderAddressList.add(orderAddress);
             orderInfo.setSellerId(sellerId);
         }
-        orderAddressMapper.insert(orderAddressList);
 
-        orderItemMapper.insert(orderInfo.getOrderItem());
-
+        orderAddressMapper.insert(orderAddress1);
         int insert = orderInfoMapper.insert(orderInfo);
         if (insert == 0) {
             throw new CustomException(ResultCodeEnum.SUBMIT_ORDER_FAIL);
         }
+
+        OrderItem orderItem = new OrderItem();
+        orderItem.setOrderId(orderInfo.getId());
+        orderItem.setSkuId(orderInfo.getSkuInfo().getId());
+        String skuAttrValueId;
+        List<SkuAttributeValue> skuAttributeValueList = skuInfoService.getAttrBySkuId(orderItem.getSkuId());
+        if (CollUtil.isNotEmpty(skuAttributeValueList)) {
+            List<String> ids = skuAttributeValueList.stream().map(SkuAttributeValue::getId).collect(Collectors.toList());
+            skuAttrValueId = String.join(",", ids);
+            orderItem.setSkuAttrValueId(skuAttrValueId);
+        }
+        orderItem.setPrice(skuInfo.getPrice());
+        orderItemMapper.insert(orderItem);
+
+        return orderInfo;
     }
 
     @Override
@@ -138,7 +154,7 @@ public class OrderInfoServiceImpl implements IOrderInfoService {
         }
         List<OrderInfo> orderInfoList = new ArrayList<>();
         for (OrderInfo orderInfo : orderInfoPage.getRecords()) {
-            String orderId = String.valueOf(orderInfo.getId());
+            String orderId = orderInfo.getId();
             {
                 LambdaQueryWrapper<OrderAddress> lqw1 = new LambdaQueryWrapper<>();
                 lqw1.eq(OrderAddress::getOrderId, orderId).eq(OrderAddress::getType, 1); // 只给收货地址

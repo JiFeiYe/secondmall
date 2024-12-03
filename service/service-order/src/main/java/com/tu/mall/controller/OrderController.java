@@ -48,15 +48,16 @@ public class OrderController {
      * 提交订单
      *
      * @param orderInfo 订单信息
-     * @return {@code Result<String>}
+     * @return {@code Result<OrderInfo>}
      */
     @ApiOperation("提交订单")
     @PostMapping
-    public Result<String> submitOrder(@RequestBody OrderInfo orderInfo) {
+    public Result<OrderInfo> submitOrder(HttpServletRequest request, @RequestBody OrderInfo orderInfo) {
         log.info("提交订单，orderInfo：{}", orderInfo);
 
-        orderInfoService.submitOrder(orderInfo);
-        return Result.ok();
+        orderInfo.setBuyerId(AuthContextHolder.getUserId(request));
+        orderInfo = orderInfoService.submitOrder(orderInfo);
+        return Result.ok(orderInfo);
     }
 
     /**
@@ -85,7 +86,7 @@ public class OrderController {
      */
     @ApiOperation("获取用户所有出售订单信息")
     @GetMapping("/sellerorder")
-    public Result<Page<OrderInfo>> getsellerOrderByPage(HttpServletRequest request, Integer page, Integer size) {
+    public Result<Page<OrderInfo>> getSellerOrderByPage(HttpServletRequest request, Integer page, Integer size) {
         log.info("获取用户所有出售订单信息，page：{}，size：{}", page, size);
 
         String userId = AuthContextHolder.getUserId(request);

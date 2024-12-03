@@ -48,16 +48,10 @@ public class OrderItem implements Serializable {
     private String skuId;
 
     /**
-     * 商品销售属性id
+     * 商品属性表id（用,分隔）
      */
-    @ApiModelProperty("商品销售属性id")
-    private String attrId;
-
-    /**
-     * 商品销售属性值id
-     */
-    @ApiModelProperty("商品销售属性值id")
-    private String attrValueId;
+    @ApiModelProperty("商品属性表id（用,分隔）")
+    private String skuAttrValueId;
 
     /**
      * 商品销售价格（下单时）

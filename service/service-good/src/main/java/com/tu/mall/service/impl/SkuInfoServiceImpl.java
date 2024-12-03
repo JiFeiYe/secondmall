@@ -2,6 +2,7 @@ package com.tu.mall.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tu.mall.entity.*;
@@ -260,8 +261,15 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
     }
 
     @Override
-    public String getUserId(String skuId) {
+    public String getUserIdBySkuId(String skuId) {
         SkuInfo skuInfo = skuInfoMapper.selectById(skuId);
-        return String.valueOf(skuInfo.getUserId());
+        return skuInfo.getUserId();
+    }
+
+    @Override
+    public List<SkuAttributeValue> getAttrBySkuId(String skuId) {
+        LambdaUpdateWrapper<SkuAttributeValue> lqw = new LambdaUpdateWrapper<>();
+        lqw.eq(SkuAttributeValue::getSkuId, skuId);
+        return skuAttributeValueMapper.selectList(lqw);
     }
 }
