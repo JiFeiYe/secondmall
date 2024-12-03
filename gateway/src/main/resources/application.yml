@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 18080
 knife4j:
   gateway:
     enabled: true # 开启gateway聚合组件
@@ -54,6 +54,6 @@ spring:
           filters:
             - StripPrefix=1
 freeUrls:
-  url: v2,/login,/register/code
+  url: v2,/login,/register/code,/alipay
 blockUrls:
   url: /upper,/lower
