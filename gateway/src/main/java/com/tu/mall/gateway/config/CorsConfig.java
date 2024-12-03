@@ -24,7 +24,6 @@ public class CorsConfig {
         corsConfiguration.addAllowedMethod("*");        // 设置请求方法
         // 添加多个允许的源
         List<String> allowedOrigins = Arrays.asList(
-                "http://47.115.130.230",
                 "http://127.0.0.1",
                 "http://localhost"
         );
