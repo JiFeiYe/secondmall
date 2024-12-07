@@ -12,8 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author JiFeiYe
@@ -39,9 +41,13 @@ public class GoodsController {
      */
     @ApiOperation("发布商品")
     @PostMapping
-    public Result<String> saveGoods(HttpServletRequest request, @RequestBody SkuInfo skuInfo) {
+    public Result<String> saveGoods(
+            HttpServletRequest request,
+            @RequestPart("skuInfo") SkuInfo skuInfo,
+            @RequestPart("imgFileList")List<MultipartFile> imgFileList) {
         log.info("保存商品进mysql，skuInfo：{}", skuInfo);
 
+        skuInfo.setImgFileList(imgFileList);
         String userId = AuthContextHolder.getUserId(request);
         skuInfo.setUserId(userId);
         SkuInfo skuInfo1 = skuInfoService.saveGoods(skuInfo); // 填充skuInfo.skuImgList返回

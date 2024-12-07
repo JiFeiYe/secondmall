@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -26,6 +27,13 @@ import java.time.LocalDateTime;
 public class UserInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 头像文件
+     */
+    @ApiModelProperty("头像文件")
+    @TableField(exist = false)
+    private MultipartFile pictureFile;
 
     /**
      * 雪花/UUID？

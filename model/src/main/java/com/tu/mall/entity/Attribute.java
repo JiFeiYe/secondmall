@@ -41,15 +41,15 @@ public class Attribute implements Serializable {
     private String name;
 
     /**
-     * 对应三级分类id
+     * 对应二级分类id
      */
-    @ApiModelProperty("对应三级分类id")
+    @ApiModelProperty("对应二级分类id")
     private String categoryId;
 
     /**
-     * 三级分类名称
+     * 二级分类名称
      */
-    @ApiModelProperty("三级分类名称")
+    @ApiModelProperty("二级分类名称")
     @TableField(exist = false)
     private String categoryName;
 

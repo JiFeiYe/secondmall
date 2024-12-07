@@ -63,7 +63,7 @@ public class SearchController {
      * @return {@code Result<SearchResponse>}
      */
     @ApiOperation("搜索")
-    @PostMapping
+    @PostMapping("/search")
     public Result<SearchResponseVo> search(@RequestBody SearchParam searchParam) {
         log.info("搜索商品，searchParam：{}", searchParam);
 
@@ -78,7 +78,7 @@ public class SearchController {
      * @return {@code Result<SearchResponseVo>}
      */
     @ApiOperation("搜索单个商品")
-    @GetMapping
+    @GetMapping("/search")
     public Result<SearchResponseVo> searchById(String skuId) {
         log.info("获取一个商品，skuId：{}", skuId);
 

@@ -53,6 +53,7 @@ public class OSSTemplate {
                 ossClient.shutdown();
             }
         }
+        // 返回存入数据库的地址
         return ossProperties.getUrl() + objectName;
     }
 

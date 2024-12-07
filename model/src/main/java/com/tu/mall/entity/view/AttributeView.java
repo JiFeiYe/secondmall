@@ -26,8 +26,8 @@ public class AttributeView implements Serializable {
     private String attrId;
     @ApiModelProperty("属性")
     private String attrName;
-    @ApiModelProperty("三级分类id")
-    private String categoryId; // 三级
+    @ApiModelProperty("二级分类id")
+    private String categoryId; // 二级
     @ApiModelProperty("属性值id")
     private String attrValueId;
     @ApiModelProperty("属性值")

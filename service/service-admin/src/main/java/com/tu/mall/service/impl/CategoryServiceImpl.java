@@ -53,6 +53,7 @@ public class CategoryServiceImpl implements ICategoryService {
         for (Map.Entry<String, List<CategoryView>> next1 : categoryMap1.entrySet()) {
             JSONObject jsonObject1 = JSONUtil.createObj();
             jsonObject1.set("category1Id", next1.getKey());
+            jsonObject1.set("value", next1.getKey());
             jsonObject1.set("category1Name", next1.getValue().get(0).getCategory1Name());
             jsonObject1.set("label", next1.getValue().get(0).getCategory1Name());
             List<JSONObject> jsonObjectList1 = new ArrayList<>();
@@ -64,6 +65,7 @@ public class CategoryServiceImpl implements ICategoryService {
             for (Map.Entry<String, List<CategoryView>> next2 : categoryMap2.entrySet()) {
                 JSONObject jsonObject2 = JSONUtil.createObj();
                 jsonObject2.set("category2Id", next2.getKey());
+                jsonObject2.set("value", next2.getKey());
                 jsonObject2.set("category2Name", next2.getValue().get(0).getCategory2Name());
                 jsonObject2.set("label", next2.getValue().get(0).getCategory2Name());
                 List<JSONObject> jsonObjectList2 = new ArrayList<>();
@@ -75,6 +77,7 @@ public class CategoryServiceImpl implements ICategoryService {
                 for (Map.Entry<String, List<CategoryView>> next3 : categoryMap3.entrySet()) {
                     JSONObject jsonObject3 = JSONUtil.createObj();
                     jsonObject3.set("category3Id", next3.getKey());
+                    jsonObject3.set("value", next3.getKey());
                     jsonObject3.set("category3Name", next3.getValue().get(0).getCategory3Name());
                     jsonObject3.set("label", next3.getValue().get(0).getCategory3Name());
                     jsonObjectList2.add(jsonObject3);
@@ -180,5 +183,10 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public Category3 getCategory3ById(String category3Id) {
         return category3Mapper.selectById(category3Id);
+    }
+
+    @Override
+    public Category2 getCategory2ById(String category2Id) {
+        return category2Mapper.selectById(category2Id);
     }
 }

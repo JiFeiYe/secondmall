@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -134,9 +135,13 @@ public class UserController {
      */
     @ApiOperation("修改个人信息")
     @PutMapping("/info")
-    public Result<String> updateUserInfo(HttpServletRequest request, @RequestBody UserInfo userInfo) {
+    public Result<String> updateUserInfo(
+            HttpServletRequest request,
+            @RequestPart("userInfo") UserInfo userInfo,
+            @RequestPart("pictureFile") MultipartFile pictureFile) {
         log.info("修改个人信息，userInfo：{}", userInfo);
 
+        userInfo.setPictureFile(pictureFile);
         String userId = AuthContextHolder.getUserId(request);
         userInfo.setUserId(userId);
         userInfoService.updateUserInfo(userInfo);

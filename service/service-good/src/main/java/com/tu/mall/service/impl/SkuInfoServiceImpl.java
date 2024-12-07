@@ -78,6 +78,10 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
         {
             List<SkuAttributeValue> skuAttributeValueList = skuInfo.getSkuAttributeValueList();
             if (skuAttributeValueList != null && CollUtil.isNotEmpty(skuAttributeValueList)) {
+                skuAttributeValueList = skuAttributeValueList
+                        .stream()
+                        .peek(skuAttributeValue -> skuAttributeValue.setSkuId(skuInfo.getId()))
+                        .collect(Collectors.toList());
                 skuAttributeValueMapper.insert(skuAttributeValueList);
                 skuInfo.setSkuAttributeValueList(skuAttributeValueList);
             }

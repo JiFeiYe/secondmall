@@ -13,6 +13,7 @@ import com.tu.mall.common.utils.JWTUtil;
 import com.tu.mall.entity.UserInfo;
 import com.tu.mall.mapper.UserInfoMapper;
 import com.tu.mall.service.IUserInfoService;
+import com.tu.mall.template.OSSTemplate;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -33,6 +34,9 @@ public class UserInfoServiceImpl implements IUserInfoService {
 
     @Autowired
     private UserInfoMapper userInfoMapper;
+
+    @Autowired
+    private OSSTemplate ossTemplate;
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
@@ -128,6 +132,10 @@ public class UserInfoServiceImpl implements IUserInfoService {
 
     @Override
     public void updateUserInfo(UserInfo userInfo) {
+        if (!userInfo.getPictureFile().isEmpty()) {
+            String url = ossTemplate.upload(userInfo.getPictureFile());
+            userInfo.setPicture(url);
+        }
         userInfoMapper.updateById(userInfo);
     }
 

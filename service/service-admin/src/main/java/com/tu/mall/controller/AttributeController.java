@@ -72,31 +72,18 @@ public class AttributeController {
     }
 
     /**
-     * 获取全部属性
+     * 通过二级分类id获取其下属分类对应属性
      *
+     * @param categoryId 二级分类id
      * @return {@code Result<List<Attribute>>}
      */
-    @ApiOperation("获取全部属性")
+    @ApiOperation("通过二级分类id获取其下属分类对应属性")
     @GetMapping("/attribute")
-    public Result<List<Attribute>> getAttribute(String categoryId) {
-        log.info("获取属性");
+    public Result<List<Attribute>> getAttributeByCategoryId(String categoryId) {
+        log.info("通过二级分类id获取其下属分类对应属性，categoryId：{}", categoryId);
 
         List<Attribute> attributeList = attributeService.getAttribute(categoryId);
         return Result.ok(attributeList);
-    }
-
-    /**
-     * 获取全部属性值
-     *
-     * @return {@code Result<List<AttributeValue>>}
-     */
-    @ApiOperation("获取全部属性值")
-    @GetMapping("/attrValue")
-    public Result<List<AttributeValue>> getAttributeValue() {
-        log.info("获取属性值");
-
-        List<AttributeValue> attributeValueList = attributeService.getAttributeValue();
-        return Result.ok(attributeValueList);
     }
 
     /**
@@ -111,6 +98,20 @@ public class AttributeController {
         log.info("根据属性获取其属性值");
 
         List<AttributeValue> attributeValueList = attributeService.getValueByAttrId(attrId);
+        return Result.ok(attributeValueList);
+    }
+
+    /**
+     * 获取全部属性值
+     *
+     * @return {@code Result<List<AttributeValue>>}
+     */
+    @ApiOperation("获取全部属性值")
+    @GetMapping("/attrValue")
+    public Result<List<AttributeValue>> getAttributeValue() {
+        log.info("获取属性值");
+
+        List<AttributeValue> attributeValueList = attributeService.getAttributeValue();
         return Result.ok(attributeValueList);
     }
 }

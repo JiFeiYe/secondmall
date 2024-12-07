@@ -26,9 +26,11 @@ public interface ICategoryService {
 
     List<Category2> getCategory2(String category1Id);
 
-    List<Category3> getCategory3(String category1Id);
+    List<Category3> getCategory3(String category2Id);
 
     void delCategory(CategoryView categoryView);
 
     Category3 getCategory3ById(String category3Id);
+
+    Category2 getCategory2ById(String category2Id);
 }

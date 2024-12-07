@@ -8,7 +8,7 @@ import com.tu.mall.common.exception.CustomException;
 import com.tu.mall.common.result.ResultCodeEnum;
 import com.tu.mall.entity.Attribute;
 import com.tu.mall.entity.AttributeValue;
-import com.tu.mall.entity.Category3;
+import com.tu.mall.entity.Category2;
 import com.tu.mall.entity.view.AttributeView;
 import com.tu.mall.mapper.AttributeMapper;
 import com.tu.mall.mapper.AttributeValueMapper;
@@ -42,7 +42,7 @@ public class AttributeServiceImpl implements IAttributeService {
     private ICategoryService categoryService;
 
     @Override
-    public List<JSONObject> getAttributeAndValueList() {
+    public List<JSONObject> getAttributeAndValueList() { // 包含第二级分类清单,三级太多太繁杂了
         // 获取所有属性、属性值列表
         List<AttributeView> attributeViewList = attributeViewMapper.selectList(null);
         // 先按attrId分组
@@ -51,15 +51,15 @@ public class AttributeServiceImpl implements IAttributeService {
                 .filter(attributeView -> attributeView.getAttrId() != null) // 过滤null值
                 .collect(Collectors.groupingBy(AttributeView::getAttrId));
         List<JSONObject> jsonObjectList = new ArrayList<>();
-        List<Category3> category3List = categoryService.getCategory3("");
-        for (Category3 category3 : category3List) {
+        List<Category2> category2List = categoryService.getCategory2("");
+        for (Category2 category2 : category2List) {
             JSONObject categoryObj = JSONUtil.createObj();
-            categoryObj.set("categoryId", category3.getId());
-            categoryObj.set("categoryName", category3.getName());
-            categoryObj.set("label", category3.getName());
+            categoryObj.set("categoryId", category2.getId());
+            categoryObj.set("categoryName", category2.getName());
+            categoryObj.set("label", category2.getName());
             List<JSONObject> jsonObjectList1 = new ArrayList<>();
             for (Map.Entry<String, List<AttributeView>> next : map.entrySet()) {
-                if (StrUtil.equals(next.getValue().get(0).getCategoryId(), category3.getId())) {
+                if (StrUtil.equals(next.getValue().get(0).getCategoryId(), category2.getId())) {
                     JSONObject obj = JSONUtil.createObj();
                     obj.set("attrId", next.getKey());
                     obj.set("attrName", next.getValue().get(0).getAttrName());
@@ -125,12 +125,12 @@ public class AttributeServiceImpl implements IAttributeService {
     @Override
     public List<Attribute> getAttribute(String categoryId) {
         LambdaQueryWrapper<Attribute> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(StrUtil.isNotEmpty(categoryId), Attribute::getCategoryId, categoryId);
+        lqw.eq(Attribute::getCategoryId, categoryId);
         List<Attribute> attributeList = attributeMapper.selectList(lqw);
         if (StrUtil.isEmpty(categoryId)) {
             for (Attribute attribute : attributeList) {
-                Category3 category3 = categoryService.getCategory3ById(attribute.getCategoryId());
-                attribute.setCategoryName(category3.getName());
+                Category2 category2 = categoryService.getCategory2ById(attribute.getCategoryId());
+                attribute.setCategoryName(category2.getName());
             }
         }
         return attributeList;
