@@ -217,9 +217,10 @@ public class SearchServiceImpl implements SearchService {
 
         // 关键字
         String keyText = searchParam.getKeyText();
-        if (StrUtil.isNotEmpty(keyText)) {
-            boolQueryBuilder.should(QueryBuilders.matchQuery("title", keyText).operator(Operator.OR));
-            boolQueryBuilder.should(QueryBuilders.matchQuery("description", keyText).operator(Operator.OR));
+        if (StrUtil.isNotEmpty(keyText)) { // todo 不建议这么干！应该自己构建 all 字段或者手动匹配搜索范围
+//            boolQueryBuilder.should(QueryBuilders.matchQuery("title", keyText).operator(Operator.OR));
+//            boolQueryBuilder.should(QueryBuilders.matchQuery("description", keyText).operator(Operator.OR));
+            boolQueryBuilder.should(QueryBuilders.queryStringQuery(keyText));
         }
 
         searchSourceBuilder.query(boolQueryBuilder);

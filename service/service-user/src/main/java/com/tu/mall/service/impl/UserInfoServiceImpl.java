@@ -17,6 +17,7 @@ import com.tu.mall.template.OSSTemplate;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -131,8 +132,9 @@ public class UserInfoServiceImpl implements IUserInfoService {
     }
 
     @Override
+    @Transactional
     public void updateUserInfo(UserInfo userInfo) {
-        if (!userInfo.getPictureFile().isEmpty()) {
+        if (userInfo.getPictureFile() != null && !userInfo.getPictureFile().isEmpty()) {
             String url = ossTemplate.upload(userInfo.getPictureFile());
             userInfo.setPicture(url);
         }

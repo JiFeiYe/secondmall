@@ -138,7 +138,7 @@ public class UserController {
     public Result<String> updateUserInfo(
             HttpServletRequest request,
             @RequestPart("userInfo") UserInfo userInfo,
-            @RequestPart("pictureFile") MultipartFile pictureFile) {
+            @RequestPart(value = "pictureFile", required = false) MultipartFile pictureFile) {
         log.info("修改个人信息，userInfo：{}", userInfo);
 
         userInfo.setPictureFile(pictureFile);

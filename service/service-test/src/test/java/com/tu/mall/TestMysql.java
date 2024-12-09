@@ -91,6 +91,9 @@ public class TestMysql {
         }
     }
 
+    /**
+     * 上传mysql到es
+     */
     @Test
     public void testEs() {
         Page<SkuInfo> skuInfoPage = skuInfoService.getGoods(1, 1001);

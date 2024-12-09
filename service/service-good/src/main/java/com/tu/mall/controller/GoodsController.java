@@ -54,7 +54,7 @@ public class GoodsController {
         // 调用es上架方法
         skuInfo1.setImgFileList(null);
         searchService.upperGoods(skuInfo1);
-        return Result.ok();
+        return Result.ok(skuInfo1.getId());
     }
 
     /**
