@@ -51,7 +51,7 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
         // 保存skuInfo
         {
             skuInfo.setStatus(0); // 尚未上架es
-            skuInfoMapper.insert(skuInfo);
+            skuInfoMapper.insertOrUpdate(skuInfo);
         }
 
         // 保存skuImg
@@ -69,7 +69,7 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
                     skuImg.setId(IdWorker.getIdStr(skuImg));
                     skuImgList.add(skuImg);
                 }
-                skuImgMapper.insert(skuImgList);
+                skuImgMapper.insertOrUpdate(skuImgList);
                 skuInfo.setSkuImgList(skuImgList);
             }
         }
@@ -82,7 +82,7 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
                         .stream()
                         .peek(skuAttributeValue -> skuAttributeValue.setSkuId(skuInfo.getId()))
                         .collect(Collectors.toList());
-                skuAttributeValueMapper.insert(skuAttributeValueList);
+                skuAttributeValueMapper.insertOrUpdate(skuAttributeValueList);
                 skuInfo.setSkuAttributeValueList(skuAttributeValueList);
             }
         }
@@ -102,12 +102,22 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
             LambdaQueryWrapper<SkuImg> lqw1 = new LambdaQueryWrapper<>();
             lqw1.eq(SkuImg::getSkuId, skuId);
             List<SkuImg> skuImgList = skuImgMapper.selectList(lqw1);
-            skuInfo.setSkuImgList(skuImgList);
+            if (CollUtil.isNotEmpty(skuImgList)) {
+                skuInfo.setSkuImgList(skuImgList);
+            }
             // 补充属性信息
             LambdaQueryWrapper<SkuAttributeValue> lqw2 = new LambdaQueryWrapper<>();
             lqw2.eq(SkuAttributeValue::getSkuId, skuId);
             List<SkuAttributeValue> skuAttributeValueList = skuAttributeValueMapper.selectList(lqw2);
-            skuInfo.setSkuAttributeValueList(skuAttributeValueList);
+            for (SkuAttributeValue skuAttributeValue : skuAttributeValueList) {
+                Attribute attribute = attributeService.getAttrById(skuAttributeValue.getAttrId());
+                AttributeValue attributeValue = attributeService.getAttrValueById(skuAttributeValue.getAttrValueId());
+                skuAttributeValue.setAttrName(attribute.getName());
+                skuAttributeValue.setAttrValueName(attributeValue.getName());
+            }
+            if (CollUtil.isNotEmpty(skuAttributeValueList)) {
+                skuInfo.setSkuAttributeValueList(skuAttributeValueList);
+            }
 
             skuInfoList.add(skuInfo);
         }
@@ -132,6 +142,12 @@ public class SkuInfoServiceImpl implements ISkuInfoService {
             LambdaQueryWrapper<SkuAttributeValue> lqw2 = new LambdaQueryWrapper<>();
             lqw2.eq(SkuAttributeValue::getSkuId, skuId);
             List<SkuAttributeValue> skuAttributeValueList = skuAttributeValueMapper.selectList(lqw2);
+            for (SkuAttributeValue skuAttributeValue : skuAttributeValueList) {
+                Attribute attribute = attributeService.getAttrById(skuAttributeValue.getAttrId());
+                AttributeValue attributeValue = attributeService.getAttrValueById(skuAttributeValue.getAttrValueId());
+                skuAttributeValue.setAttrName(attribute.getName());
+                skuAttributeValue.setAttrValueName(attributeValue.getName());
+            }
             if (CollUtil.isNotEmpty(skuAttributeValueList))
                 skuInfo.setSkuAttributeValueList(skuAttributeValueList);
 

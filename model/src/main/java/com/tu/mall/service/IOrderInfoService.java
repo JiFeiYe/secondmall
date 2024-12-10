@@ -20,4 +20,6 @@ public interface IOrderInfoService {
     OrderInfo submitOrder(OrderInfo orderInfo);
 
     Page<OrderInfo> getOrderByPage(int i, String userId, Integer page, Integer size);
+
+    void payOrder(String orderId, String payPrice);
 }

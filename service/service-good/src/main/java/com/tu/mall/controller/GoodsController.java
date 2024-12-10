@@ -44,7 +44,7 @@ public class GoodsController {
     public Result<String> saveGoods(
             HttpServletRequest request,
             @RequestPart("skuInfo") SkuInfo skuInfo,
-            @RequestPart("imgFileList")List<MultipartFile> imgFileList) {
+            @RequestPart(value = "imgFileList", required = false)List<MultipartFile> imgFileList) {
         log.info("保存商品进mysql，skuInfo：{}", skuInfo);
 
         skuInfo.setImgFileList(imgFileList);

@@ -4,8 +4,10 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tu.mall.api.SearchService;
 import com.tu.mall.common.exception.CustomException;
 import com.tu.mall.common.result.ResultCodeEnum;
 import com.tu.mall.entity.*;
@@ -41,6 +43,8 @@ public class OrderInfoServiceImpl implements IOrderInfoService {
     private IUserAddressService userAddressService;
     @DubboReference
     private ISkuInfoService skuInfoService;
+    @DubboReference
+    private SearchService searchService;
 
     @Autowired
     private OrderInfoMapper orderInfoMapper;
@@ -170,11 +174,25 @@ public class OrderInfoServiceImpl implements IOrderInfoService {
             {
                 String skuId = orderInfo.getOrderItem().getSkuId();
                 SkuInfo skuInfo = skuInfoService.getGoods(skuId);
+                skuInfo.setPrice(orderInfo.getOrderItem().getPrice());
                 orderInfo.setSkuInfo(skuInfo);
             }
             orderInfoList.add(orderInfo);
         }
         orderInfoPage.setRecords(orderInfoList);
         return orderInfoPage;
+    }
+
+    @Override
+    public void payOrder(String orderId, String payPrice) {
+        LambdaUpdateWrapper<OrderInfo> luw = new LambdaUpdateWrapper<>();
+        luw.eq(OrderInfo::getId, orderId)
+                .set(OrderInfo::getPayPrice, payPrice).set(OrderInfo::getStatus, 1);
+        orderInfoMapper.update(luw);
+
+        LambdaQueryWrapper<OrderItem> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(OrderItem::getOrderId, orderId);
+        OrderItem orderItem = orderItemMapper.selectOne(lqw);
+        searchService.lowerGoods(orderItem.getSkuId());
     }
 }

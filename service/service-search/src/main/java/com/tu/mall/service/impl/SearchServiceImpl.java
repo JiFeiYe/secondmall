@@ -31,7 +31,6 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -42,7 +41,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author JiFeiYe
@@ -72,7 +70,8 @@ public class SearchServiceImpl implements SearchService {
         // 设置常规属性
         Good good = new Good();
         BeanUtil.copyProperties(skuInfo, good);
-        good.setCategory3Id(skuInfo.getCategoryId());
+        String category3Id = skuInfo.getCategoryId();
+        good.setCategory3Id(category3Id);
 
         // 设置imgUrlList
         List<SkuImg> skuImgList = skuInfo.getSkuImgList();
@@ -88,7 +87,7 @@ public class SearchServiceImpl implements SearchService {
         // 设置searchAttrList
         List<SkuAttributeValue> skuAttributeValueList = skuInfo.getSkuAttributeValueList();
         List<SearchAttr> searchAttrList = new ArrayList<>();
-        AtomicReference<String> category3Id = new AtomicReference<>("0"); // 原子更新
+//        AtomicReference<String> category3Id = new AtomicReference<>("0"); // 原子更新
 //        AtomicLong category3Id = new AtomicLong(0); // 原子更新
         if (skuAttributeValueList != null && CollUtil.isNotEmpty(skuAttributeValueList)) {
             skuAttributeValueList.forEach(skuAttributeValue -> {
@@ -108,7 +107,7 @@ public class SearchServiceImpl implements SearchService {
                         attributeValue.getName()
                 );
                 searchAttrList.add(searchAttr);
-                category3Id.compareAndSet("0", attribute.getCategoryId()); // 就第一次就行了，后面都跳过
+//                category3Id.compareAndSet("0", attribute.getCategoryId()); // 就第一次就行了，后面都跳过
             });
         }
         good.setAttrList(searchAttrList);
@@ -116,6 +115,7 @@ public class SearchServiceImpl implements SearchService {
         LambdaQueryWrapper<CategoryView> lqw = new LambdaQueryWrapper<>();
         lqw.eq(CategoryView::getCategory3Id, category3Id);
         CategoryView categoryView = categoryViewMapper.selectOne(lqw);
+//        System.out.println("categoryView = " + categoryView);
         BeanUtil.copyProperties(categoryView, good);
 
         // 加入es
