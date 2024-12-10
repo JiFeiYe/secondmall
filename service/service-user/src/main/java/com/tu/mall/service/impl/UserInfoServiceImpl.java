@@ -138,6 +138,11 @@ public class UserInfoServiceImpl implements IUserInfoService {
             String url = ossTemplate.upload(userInfo.getPictureFile());
             userInfo.setPicture(url);
         }
+        if (StrUtil.isNotEmpty(userInfo.getAccount())) {
+            userInfo.setIdentity(1);
+        } else {
+            userInfo.setIdentity(0);
+        }
         userInfoMapper.updateById(userInfo);
     }
 
