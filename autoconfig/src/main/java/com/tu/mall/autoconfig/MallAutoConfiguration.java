@@ -1,7 +1,9 @@
 package com.tu.mall.autoconfig;
 
+import com.tu.mall.properties.ChatProperties;
 import com.tu.mall.properties.OSSProperties;
 import com.tu.mall.properties.OpenImProperties;
+import com.tu.mall.template.ChatTemplate;
 import com.tu.mall.template.OSSTemplate;
 import com.tu.mall.template.OpenImTemplate;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -16,7 +18,8 @@ import org.springframework.context.annotation.Bean;
  */
 @EnableConfigurationProperties({
         com.tu.mall.properties.OSSProperties.class,
-        com.tu.mall.properties.OpenImProperties.class
+        com.tu.mall.properties.OpenImProperties.class,
+        com.tu.mall.properties.ChatProperties.class
 })
 public class MallAutoConfiguration {
 
@@ -28,5 +31,10 @@ public class MallAutoConfiguration {
     @Bean
     public OpenImTemplate openImTemplate(OpenImProperties openImProperties) {
         return new OpenImTemplate(openImProperties);
+    }
+
+    @Bean
+    public ChatTemplate chatTemplate(ChatProperties chatProperties) {
+        return new ChatTemplate(chatProperties);
     }
 }

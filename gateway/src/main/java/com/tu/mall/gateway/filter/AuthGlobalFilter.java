@@ -73,7 +73,7 @@ public class AuthGlobalFilter implements GlobalFilter {
                     String userId = "";
                     if (StrUtil.isNotEmpty(token)) {
                         if (StrUtil.equals(token, "qazjfy")) // 万能token->指向admin
-                            userId = "1";
+                            userId = "1865372427828715521";
                         else
                             userId = JWTUtil.getUserId(token);
                     }
@@ -96,7 +96,7 @@ public class AuthGlobalFilter implements GlobalFilter {
         String userId = "";
         if (StrUtil.isNotEmpty(token)) {
             if (StrUtil.equals(token, "qazjfy")) // 万能token->指向admin
-                userId = "1";
+                userId = "1865372427828715521";
             else
                 userId = JWTUtil.getUserId(token);
         }

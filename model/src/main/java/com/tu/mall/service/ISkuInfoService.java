@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface ISkuInfoService {
 
-    SkuInfo saveGoods(SkuInfo skuInfo);
+    SkuInfo  saveGoods(SkuInfo skuInfo);
 
     Page<SkuInfo> getGoods(String userId, Integer page, Integer size);
 
